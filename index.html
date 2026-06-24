@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blendi PCP — Painel de Atrasos</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --g:#0A6821;--gm:#51AE32;--gl:#95C11E;--yl:#C7D300;--dk:#3C3C3B;
+  --bg:#F5F7F5;--card:#fff;--border:#e0e4e0;--text:#3C3C3B;--muted:#6B7A6B;
+  --danger:#A32D2D;--danger-bg:#FCEBEB;--warn:#854F0B;--warn-bg:#FAEEDA;--ok:#27500A;--ok-bg:#EAF3DE;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.hdr{background:var(--g);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:100}
+.hdr-left{display:flex;align-items:center;gap:12px}
+.logo-svg{width:26px;height:34px}
+.hdr h1{color:#fff;font-size:15px;font-weight:500}
+.hdr-sub{color:#a8d5a2;font-size:11px;margin-top:1px}
+.hdr-date{color:#a8d5a2;font-size:12px}
+.nav{background:#0d5c1a;display:flex;border-bottom:1px solid rgba(255,255,255,.08);overflow-x:auto}
+.nav-btn{padding:12px 20px;color:#a8d5a2;background:transparent;border:none;cursor:pointer;font-size:13px;white-space:nowrap;border-bottom:2px solid transparent;transition:.15s;font-family:inherit}
+.nav-btn:hover{color:#fff;background:rgba(255,255,255,.05)}
+.nav-btn.on{color:#fff;border-bottom-color:var(--yl);background:rgba(255,255,255,.07)}
+.main{max-width:1200px;margin:0 auto;padding:20px 16px}
+.sec{display:none}.sec.on{display:block}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:20px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.kpi-lbl{font-size:11px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.kpi-val{font-size:26px;font-weight:500}
+.kpi-val.ok{color:var(--ok)}.kpi-val.warn{color:var(--warn)}.kpi-val.danger{color:var(--danger)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px}
+.card-title{font-size:14px;font-weight:500;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card-title svg{color:var(--g)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.form-grid{grid-template-columns:1fr}}
+.form-full{grid-column:1/-1}
+.field label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px;font-weight:500}
+input,select,textarea{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:#fff;color:var(--text);outline:none;transition:.15s}
+input:focus,select:focus{border-color:var(--gm);box-shadow:0 0 0 3px rgba(81,174,50,.12)}
+.btn{padding:9px 18px;border-radius:8px;font-size:13px;font-family:inherit;cursor:pointer;border:1px solid var(--border);background:#fff;color:var(--text);transition:.15s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{background:#f0f0f0}
+.btn-primary{background:var(--g);color:#fff;border-color:var(--g)}
+.btn-primary:hover{background:#0d5c1a}
+.btn-danger{color:var(--danger);border-color:var(--danger)}
+.btn-danger:hover{background:var(--danger-bg)}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500}
+.badge-ok{background:var(--ok-bg);color:var(--ok)}
+.badge-warn{background:var(--warn-bg);color:var(--warn)}
+.badge-danger{background:var(--danger-bg);color:var(--danger)}
+.ai-box{background:#f8faf8;border:1px solid #c8e0c8;border-radius:10px;padding:14px;font-size:13px;line-height:1.75;color:var(--text);min-height:80px;white-space:pre-wrap}
+.ai-placeholder{color:var(--muted);font-style:italic}
+.semaforo{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.sem-card{border-radius:10px;padding:14px;border:1px solid var(--border)}
+.sem-ok{background:var(--ok-bg);border-color:#c0ddb0}
+.sem-warn{background:var(--warn-bg);border-color:#f0d0a0}
+.sem-danger{background:var(--danger-bg);border-color:#f0b0b0}
+.sem-obra{font-size:12px;font-weight:500;margin-bottom:4px}
+.sem-num{font-size:24px;font-weight:500}
+.sem-lbl{font-size:11px;color:var(--muted);margin-top:2px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:var(--g);color:#fff;padding:9px 10px;text-align:left;font-weight:500;font-size:11px;white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:hover td{background:#f8faf8}
+.empty{text-align:center;padding:32px;color:var(--muted);font-size:13px}
+.feedback{margin-top:12px;font-size:12px}
+.loading{color:var(--muted);font-style:italic}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--g);border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.status-bar{background:#f0f4f0;border:1px solid #d0e0d0;border-radius:8px;padding:10px 14px;font-size:12px;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.status-dot{width:8px;height:8px;border-radius:50%;background:#ccc;flex-shrink:0}
+.status-dot.connected{background:var(--gm)}
+.status-dot.error{background:var(--danger)}
+.obra-tab{padding:6px 14px;border-radius:20px;font-size:12px;border:1px solid var(--border);background:#fff;color:var(--muted);cursor:pointer;transition:.15s;font-family:inherit}
+.obra-tab:hover{border-color:var(--gm);color:var(--g)}
+.obra-tab.active{background:var(--g);color:#fff;border-color:var(--g);font-weight:500}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-left">
+    <svg class="logo-svg" viewBox="0 0 40 52" fill="none">
+      <path d="M20 0 C20 0 38 8 38 22 C38 34 28 38 20 38 C12 38 2 34 2 22 C2 8 20 0 20 0Z" fill="#C7D300" opacity="0.9"/>
+      <circle cx="20" cy="36" r="14" fill="#51AE32"/>
+      <ellipse cx="20" cy="28" rx="10" ry="8" fill="#0A6821" opacity="0.5"/>
+    </svg>
+    <div>
+      <h1>Blendi PCP — Painel de Atrasos</h1>
+      <div class="hdr-sub">Monitoramento · Motivos · Causas raízes · Análise por IA</div>
+    </div>
+  </div>
+  <span class="hdr-date" id="dataAtual"></span>
+</div>
+
+<div class="nav">
+  <button class="nav-btn on" onclick="showSec('dashboard',this)">📊 Dashboard</button>
+  <button class="nav-btn" onclick="showSec('registro',this)">➕ Registrar atraso</button>
+  <button class="nav-btn" onclick="showSec('analise',this)">🧠 Análise IA</button>
+  <button class="nav-btn" onclick="showSec('historico',this)">📋 Histórico</button>
+</div>
+
+<div class="main">
+
+  <div class="status-bar">
+    <div class="status-dot" id="statusDot"></div>
+    <span id="statusText">Conectando ao banco de dados...</span>
+  </div>
+
+  <div class="sec on" id="sec-dashboard">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+      <span style="font-size:13px;color:var(--muted)">Filtrar por obra:</span>
+      <div style="display:flex;gap:6px;flex-wrap:wrap" id="obraTabs">
+        <button class="obra-tab active" onclick="filtrarObra(null,this)">Todas</button>
+        <button class="obra-tab" onclick="filtrarObra('Almada',this)">Almada</button>
+        <button class="obra-tab" onclick="filtrarObra('Montebello',this)">Montebello</button>
+        <button class="obra-tab" onclick="filtrarObra('Reserva das Palmeiras',this)">Res. Palmeiras</button>
+        <button class="obra-tab" onclick="filtrarObra('Reserva das Tulipas',this)">Res. Tulipas</button>
+        <button class="obra-tab" onclick="filtrarObra('Reserva do Porto',this)">Res. Porto</button>
+        <button class="obra-tab" onclick="filtrarObra('Miraggio',this)">Miraggio</button>
+      </div>
+    </div>
+    <div class="kpi-row" id="kpiRow">
+      <div class="kpi"><div class="kpi-lbl">Total atrasos</div><div class="kpi-val" id="k1">—</div></div>
+      <div class="kpi"><div class="kpi-lbl">Em atraso</div><div class="kpi-val" id="k2">—</div></div>
+      <div class="kpi"><div class="kpi-lbl">Impacto total</div><div class="kpi-val" id="k3">—</div></div>
+      <div class="kpi"><div class="kpi-lbl">Obras afetadas</div><div class="kpi-val" id="k4">—</div></div>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">📊 Motivos de atraso</div>
+        <div style="position:relative;height:220px"><canvas id="chartM" role="img" aria-label="Motivos de atraso">Gráfico de motivos.</canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">🔍 Causas raízes</div>
+        <div style="position:relative;height:220px"><canvas id="chartC" role="img" aria-label="Causas raízes">Gráfico de causas.</canvas></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🚦 Semáforo por obra</div>
+      <div class="semaforo" id="semaforo"></div>
+    </div>
+  </div>
+
+  <div class="sec" id="sec-registro">
+    <div class="card">
+      <div class="card-title">➕ Novo registro de atraso</div>
+      <div class="form-grid">
+        <div class="field"><label>Obra *</label>
+          <select id="f-obra">
+            <option value="">Selecione</option>
+            <option>Almada</option><option>Montebello</option><option>Reserva das Palmeiras</option>
+            <option>Reserva das Tulipas</option><option>Reserva do Porto</option><option>Miraggio</option>
+          </select>
+        </div>
+        <div class="field"><label>Torre</label>
+          <select id="f-torre">
+            <option value="">Selecione</option>
+            <option>Torre 1</option><option>Torre 2</option><option>Torre 3</option><option>Torre 4</option>
+            <option>Torre 5</option><option>Torre 6</option><option>Torre 7</option><option>Torre 8</option>
+            <option>Torre 9</option><option>Torre 10</option><option>Torre 11</option><option>Torre 12</option>
+            <option>Torre 13</option><option>Torre 14</option><option>Torre 15</option>
+          </select>
+        </div>
+        <div class="field"><label>Pavimento</label>
+          <select id="f-pav">
+            <option value="">Selecione</option>
+            <option>Subsolo</option><option>Térreo</option><option>1º Pav</option><option>2º Pav</option>
+            <option>3º Pav</option><option>4º Pav</option><option>5º Pav</option><option>6º Pav</option>
+            <option>7º Pav</option><option>8º Pav</option><option>9º Pav</option><option>10º Pav</option>
+            <option>11º Pav</option><option>12º Pav</option><option>13º Pav</option><option>14º Pav</option>
+            <option>15º Pav</option><option>Hall</option><option>Cobertura</option>
+          </select>
+        </div>
+        <div class="field"><label>Disciplina</label>
+          <select id="f-disc">
+            <option value="">Selecione</option>
+            <option>Alvenaria</option><option>Elétrica</option><option>Hidráulica</option>
+            <option>Impermeabilização</option><option>Revestimento</option><option>Piso</option>
+            <option>Pintura</option><option>Esquadrias</option><option>Estrutura</option><option>Gesso</option>
+          </select>
+        </div>
+        <div class="field form-full"><label>Atividade *</label>
+          <input type="text" id="f-ativ" placeholder="Ex: Alvenaria 3º Pavimento Torre 1">
+        </div>
+        <div class="field"><label>Responsável</label>
+          <input type="text" id="f-resp" placeholder="Nome do responsável">
+        </div>
+        <div class="field"><label>Empreiteiro</label>
+          <input type="text" id="f-empr" placeholder="Empresa subcontratada">
+        </div>
+        <div class="field"><label>Data prevista</label>
+          <input type="date" id="f-dprev">
+        </div>
+        <div class="field"><label>Data realizada</label>
+          <input type="date" id="f-dreal">
+        </div>
+        <div class="field"><label>Motivo de atraso *</label>
+          <select id="f-motivo">
+            <option value="">Selecione</option>
+            <option>Falta de material</option><option>Interferência com outros serviços</option>
+            <option>Mudança de prioridade</option><option>Erro de planejamento</option>
+            <option>Equipe insuficiente</option><option>Projeto não liberado</option>
+            <option>Retrabalho</option><option>Condição climática</option>
+          </select>
+        </div>
+        <div class="field"><label>Causa raiz *</label>
+          <select id="f-causa">
+            <option value="">Selecione</option>
+            <option>Atraso de fornecedor</option><option>Planejamento incorreto</option>
+            <option>Falta de alinhamento</option><option>Baixa produtividade</option>
+            <option>Reprogramação de obra</option><option>Solicitação tardia</option>
+            <option>Erro de projeto</option><option>Falta de mão de obra</option>
+          </select>
+        </div>
+        <div class="field"><label>Impacto (dias)</label>
+          <input type="number" id="f-impacto" min="0" placeholder="0">
+        </div>
+        <div class="field"><label>Status</label>
+          <select id="f-status">
+            <option>Em atraso</option><option>Concluído com atraso</option>
+            <option>Reprogramado</option><option>Cancelado</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="registrar()">✓ Registrar e analisar com IA</button>
+        <button class="btn" onclick="limparForm()">Limpar</button>
+      </div>
+      <div id="reg-feedback" class="feedback"></div>
+    </div>
+  </div>
+
+  <div class="sec" id="sec-analise">
+    <div class="card">
+      <div class="card-title">🧠 Análise automática por IA</div>
+      <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+        <select id="filtro-obra" style="flex:1;min-width:160px">
+          <option value="">Todas as obras</option>
+          <option>Almada</option><option>Montebello</option><option>Reserva das Palmeiras</option>
+          <option>Reserva das Tulipas</option><option>Reserva do Porto</option><option>Miraggio</option>
+        </select>
+        <button class="btn btn-primary" onclick="gerarAnalise()">🧠 Gerar análise</button>
+      </div>
+      <div class="ai-box" id="aiBox"><span class="ai-placeholder">Selecione uma obra e clique em "Gerar análise" para obter um diagnóstico automático.</span></div>
+    </div>
+  </div>
+
+  <div class="sec" id="sec-historico">
+    <div class="card">
+      <div class="card-title">📋 Histórico de registros</div>
+      <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+        <select id="hist-obra" onchange="renderHistorico()" style="flex:1;min-width:160px">
+          <option value="">Todas as obras</option>
+          <option>Almada</option><option>Montebello</option><option>Reserva das Palmeiras</option>
+          <option>Reserva das Tulipas</option><option>Reserva do Porto</option><option>Miraggio</option>
+        </select>
+        <button class="btn btn-danger" onclick="limparTudo()">🗑 Limpar tudo</button>
+      </div>
+      <div class="table-wrap" id="tabelaHist"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+// ══════════════════════════════════════════════════════════
+// CONFIGURAÇÃO FIREBASE — Blendi PCP
+// ══════════════════════════════════════════════════════════
+const firebaseConfig = {
+  apiKey: "AIzaSyABpVb-2iMuw9EBB5rgQgbVh2KlR8qDhTs",
+  authDomain: "teste-d86eb.firebaseapp.com",
+  projectId: "teste-d86eb",
+  storageBucket: "teste-d86eb.firebasestorage.app",
+  messagingSenderId: "2247264333",
+  appId: "1:2247264333:web:e9e534aff7bbdd204df404"
+};
+
+// ══════════════════════════════════════════════════════════
+// CLOUDFLARE WORKER URL — Blendi PCP
+// ══════════════════════════════════════════════════════════
+const WORKER_URL = 'https://patient-heart-15b6.jean-barp10.workers.dev';
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const col = collection(db, 'atrasos');
+
+let dados = [];
+let chartM = null, chartC = null;
+let obraFiltro = null;
+
+function setStatus(ok, msg) {
+  document.getElementById('statusDot').className = 'status-dot ' + (ok ? 'connected' : 'error');
+  document.getElementById('statusText').textContent = msg;
+}
+
+// Listener em tempo real
+try {
+  const q = query(col, orderBy('ts', 'desc'));
+  onSnapshot(q, snap => {
+    dados = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    setStatus(true, `Conectado ao Firebase · ${dados.length} registro(s) · atualização em tempo real`);
+    renderDashboard();
+    renderHistorico();
+  }, err => {
+    setStatus(false, 'Erro de conexão — verifique as configurações do Firebase');
+  });
+} catch(e) {
+  setStatus(false, 'Firebase não configurado — edite o arquivo com suas credenciais');
+}
+
+
+function filtrarObra(obra, btn) {
+  obraFiltro = obra;
+  document.querySelectorAll('.obra-tab').forEach(b => b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderDashboard();
+}
+window.filtrarObra = filtrarObra;
+
+function filtrarObraCard(obra, card) {
+  if(obraFiltro === obra) {
+    obraFiltro = null;
+    document.querySelectorAll('.obra-tab').forEach(b => b.classList.remove('active'));
+    document.querySelector('.obra-tab').classList.add('active');
+  } else {
+    obraFiltro = obra;
+    document.querySelectorAll('.obra-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.obra-tab').forEach(b => {
+      if(b.textContent.includes(obra.replace('Reserva das ','Res. ').replace('Reserva do ','Res. '))) b.classList.add('active');
+    });
+  }
+  renderDashboard();
+}
+window.filtrarObraCard = filtrarObraCard;
+
+function showSec(id, btn) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('on'));
+  document.getElementById('sec-'+id).classList.add('on');
+  btn.classList.add('on');
+}
+window.showSec = showSec;
+
+function renderDashboard() {
+  const lista = obraFiltro ? dados.filter(d => d.obra === obraFiltro) : dados;
+  const total = lista.length;
+  const emAtraso = lista.filter(d => d.status === 'Em atraso').length;
+  const impacto = lista.reduce((s,d) => s+(parseInt(d.impacto)||0), 0);
+  const obras = [...new Set(lista.map(d => d.obra))].filter(Boolean).length;
+
+  const kv = (id, val, cls) => { const el = document.getElementById(id); if(el){el.textContent=val;el.className='kpi-val '+(cls||'');} };
+  kv('k1', total, total>10?'danger':total>5?'warn':'ok');
+  kv('k2', emAtraso, emAtraso>5?'danger':emAtraso>2?'warn':'ok');
+  kv('k3', impacto+' d', impacto>30?'danger':impacto>15?'warn':'ok');
+  kv('k4', obras, '');
+
+  const contM={}, contC={};
+  lista.forEach(d => {
+    if(d.motivo) contM[d.motivo]=(contM[d.motivo]||0)+1;
+    if(d.causa)  contC[d.causa] =(contC[d.causa] ||0)+1;
+  });
+  const topM = Object.entries(contM).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const topC = Object.entries(contC).sort((a,b)=>b[1]-a[1]).slice(0,6);
+
+  const opts = (labels, vals, color) => ({
+    type:'bar', data:{labels, datasets:[{data:vals,backgroundColor:color,borderRadius:4}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{x:{ticks:{font:{size:10}},grid:{color:'rgba(0,0,0,0.05)'}},
+              y:{ticks:{font:{size:10}},grid:{display:false}}}}
+  });
+
+  if(chartM) chartM.destroy();
+  if(chartC) chartC.destroy();
+
+  const cmEl = document.getElementById('chartM');
+  const ccEl = document.getElementById('chartC');
+
+  if(topM.length && cmEl) chartM = new Chart(cmEl, opts(topM.map(x=>x[0]),topM.map(x=>x[1]),'#0A6821'));
+  else if(cmEl) cmEl.parentElement.innerHTML='<div class="empty">Nenhum registro ainda</div>';
+
+  if(topC.length && ccEl) chartC = new Chart(ccEl, opts(topC.map(x=>x[0]),topC.map(x=>x[1]),'#51AE32'));
+  else if(ccEl) ccEl.parentElement.innerHTML='<div class="empty">Nenhum registro ainda</div>';
+
+  const obraList=['Almada','Montebello','Reserva das Palmeiras','Reserva das Tulipas','Reserva do Porto','Miraggio'];
+  const el = document.getElementById('semaforo');
+  if(el) el.innerHTML = obraList.map(obra => {
+    const n = dados.filter(d=>d.obra===obra).length;
+    const cls = n===0?'sem-ok':n<=2?'sem-warn':'sem-danger';
+    const cor = n===0?'var(--ok)':n<=2?'var(--warn)':'var(--danger)';
+    return `<div class="sem-card ${cls}">
+      <div class="sem-obra">${obra}</div>
+      <div class="sem-num" style="color:${cor}">${n}</div>
+      <div class="sem-lbl">${n===0?'sem atrasos':n===1?'atraso':n+' atrasos'}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderHistorico() {
+  const filtro = document.getElementById('hist-obra')?.value;
+  const lista = filtro ? dados.filter(d=>d.obra===filtro) : dados;
+  const el = document.getElementById('tabelaHist');
+  if(!el) return;
+  if(!lista.length){el.innerHTML='<div class="empty">Nenhum registro encontrado.</div>';return;}
+  el.innerHTML=`<table>
+    <thead><tr>
+      <th>Data</th><th>Obra</th><th>Atividade</th><th>Motivo</th><th>Causa raiz</th><th>Impacto</th><th>Status</th><th></th>
+    </tr></thead>
+    <tbody>${lista.map(d=>{
+      const sc=d.status==='Em atraso'?'danger':d.status==='Reprogramado'?'warn':'ok';
+      return `<tr>
+        <td>${d.data||'—'}</td><td>${d.obra||'—'}</td><td>${d.atividade||'—'}</td>
+        <td>${d.motivo||'—'}</td><td>${d.causa||'—'}</td>
+        <td>${d.impacto?d.impacto+' dias':'—'}</td>
+        <td><span class="badge badge-${sc}">${d.status}</span></td>
+        <td><button class="btn btn-danger" style="padding:4px 10px;font-size:11px" onclick="excluir('${d.id}')">✕</button></td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
+}
+window.renderHistorico = renderHistorico;
+
+async function registrar() {
+  const obra=document.getElementById('f-obra').value;
+  const atividade=document.getElementById('f-ativ').value;
+  const motivo=document.getElementById('f-motivo').value;
+  const causa=document.getElementById('f-causa').value;
+  if(!obra||!atividade||!motivo||!causa){
+    document.getElementById('reg-feedback').innerHTML='<span style="color:var(--danger)">⚠ Preencha os campos obrigatórios: Obra, Atividade, Motivo e Causa raiz.</span>';
+    return;
+  }
+  const reg={
+    ts:Date.now(), data:new Date().toLocaleDateString('pt-BR'),
+    obra, torre:document.getElementById('f-torre').value,
+    pavimento:document.getElementById('f-pav').value,
+    disciplina:document.getElementById('f-disc').value,
+    atividade, responsavel:document.getElementById('f-resp').value,
+    empreiteiro:document.getElementById('f-empr').value,
+    dataPrevista:document.getElementById('f-dprev').value,
+    dataRealizada:document.getElementById('f-dreal').value,
+    motivo, causa, impacto:document.getElementById('f-impacto').value,
+    status:document.getElementById('f-status').value
+  };
+  try {
+    await addDoc(col, reg);
+    document.getElementById('reg-feedback').innerHTML='<span style="color:var(--ok)">✓ Salvo no Firebase! Gerando análise por IA...</span>';
+    limparForm();
+    await gerarAnaliseRegistro(reg);
+  } catch(e) {
+    document.getElementById('reg-feedback').innerHTML='<span style="color:var(--danger)">Erro ao salvar. Verifique a conexão com o Firebase.</span>';
+  }
+}
+window.registrar = registrar;
+
+function limparForm() {
+  ['f-obra','f-torre','f-pav','f-disc','f-motivo','f-causa'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['f-ativ','f-resp','f-empr','f-dprev','f-dreal','f-impacto'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('f-status').value='Em atraso';
+}
+window.limparForm = limparForm;
+
+async function excluir(id) {
+  if(!confirm('Excluir este registro?')) return;
+  await deleteDoc(doc(db,'atrasos',id));
+}
+window.excluir = excluir;
+
+async function limparTudo() {
+  if(!confirm('Apagar TODOS os registros do Firebase? Esta ação não pode ser desfeita.')) return;
+  for(const d of dados) await deleteDoc(doc(db,'atrasos',d.id));
+}
+window.limparTudo = limparTudo;
+
+async function chamarIA(prompt) {
+  if(WORKER_URL.includes('SEU_WORKER')) {
+    return '[Configure o WORKER_URL no arquivo index.html com a URL do seu Cloudflare Worker para ativar a IA.]';
+  }
+  const r = await fetch(WORKER_URL, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({prompt})
+  });
+  const data = await r.json();
+  return data.text || 'Erro ao obter resposta.';
+}
+
+async function gerarAnaliseRegistro(reg) {
+  const prompt=`Você é especialista em PCP de obras MCMV. Analise este atraso e responda em 3 partes curtas:
+OBRA: ${reg.obra} | ATIVIDADE: ${reg.atividade} | MOTIVO: ${reg.motivo} | CAUSA: ${reg.causa} | IMPACTO: ${reg.impacto||'?'} dias | STATUS: ${reg.status}
+1. DIAGNÓSTICO (1-2 frases) 2. CAUSA PROVÁVEL (contexto MCMV) 3. AÇÃO RECOMENDADA (prática e específica). Máx 120 palavras.`;
+  try {
+    const txt = await chamarIA(prompt);
+    document.getElementById('reg-feedback').innerHTML+=`<div style="margin-top:12px"><strong style="color:var(--g);font-size:12px">🧠 Análise IA — ${reg.obra}</strong><div class="ai-box" style="margin-top:6px">${txt}</div></div>`;
+  } catch(e) {}
+}
+
+async function gerarAnalise() {
+  const obra=document.getElementById('filtro-obra').value;
+  const lista=obra?dados.filter(d=>d.obra===obra):dados;
+  const el=document.getElementById('aiBox');
+  if(!lista.length){el.innerHTML='<span class="ai-placeholder">Nenhum registro para analisar.</span>';return;}
+  el.innerHTML='<span class="loading"><span class="spinner"></span>Gerando análise...</span>';
+  const contM={},contC={};
+  lista.forEach(d=>{if(d.motivo)contM[d.motivo]=(contM[d.motivo]||0)+1;if(d.causa)contC[d.causa]=(contC[d.causa]||0)+1;});
+  const topM=Object.entries(contM).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>`${x[0]} (${x[1]}x)`).join(', ');
+  const topC=Object.entries(contC).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>`${x[0]} (${x[1]}x)`).join(', ');
+  const prompt=`Especialista em Lean Construction e PCP de obras MCMV. Analise:
+${obra?'OBRA: '+obra:'OBRAS: '+[...new Set(lista.map(d=>d.obra))].join(', ')}
+TOTAL: ${lista.length} atrasos | IMPACTO: ${lista.reduce((s,d)=>s+(parseInt(d.impacto)||0),0)} dias
+MOTIVOS: ${topM||'n/a'} | CAUSAS: ${topC||'n/a'} | EM ABERTO: ${lista.filter(d=>d.status==='Em atraso').length}
+Estruture: 1.SITUAÇÃO ATUAL 2.PRINCIPAIS PROBLEMAS 3.ANÁLISE LEAN (desperdícios) 4.RECOMENDAÇÕES PCP. Máx 200 palavras.`;
+  try {
+    el.textContent = await chamarIA(prompt);
+  } catch(e) {
+    el.innerHTML='<span class="ai-placeholder">Erro de conexão com o Worker.</span>';
+  }
+}
+window.gerarAnalise = gerarAnalise;
+
+document.getElementById('dataAtual').textContent = new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+</body>
+</html>

@@ -275,6 +275,7 @@ tr:hover td{background:#f8faf8}
           <option>Reserva das Tulipas</option><option>Reserva do Porto</option><option>Miraggio</option>
         </select>
         <button class="btn btn-primary" onclick="carregarPrevision()">🔄 Atualizar dados</button>
+        <button class="btn" onclick="diagnosticar()" style="font-size:11px">🔍 Diagnóstico</button>
         <button class="btn btn-primary" onclick="importarParaFirebase()" id="btnImportar" style="display:none">⬇️ Importar para o painel</button>
       </div>
       <div id="prev-status" style="font-size:12px;color:var(--muted);margin-bottom:10px"></div>
@@ -635,6 +636,33 @@ async function importarParaFirebase() {
   document.getElementById('prev-status').innerHTML += ' · <span style="color:var(--ok)">✓ ' + count + ' registro(s) importado(s) com sucesso!</span>';
 }
 window.importarParaFirebase = importarParaFirebase;
+
+async function diagnosticar() {
+  const el = document.getElementById('prev-tabela');
+  const status = document.getElementById('prev-status');
+  el.innerHTML = '<div class="empty"><span class="spinner"></span> Testando endpoints do Prevision...</div>';
+  status.textContent = '';
+  try {
+    const r = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'prevision_debug' })
+    });
+    const data = await r.json();
+    if (data.error) { el.innerHTML = '<div class="empty" style="color:var(--danger)">' + data.error + '</div>'; return; }
+    let html = '<table><thead><tr><th>Endpoint</th><th>Status</th><th>Resposta</th></tr></thead><tbody>';
+    for (const [ep, res] of Object.entries(data.debug || {})) {
+      const ok = res.status >= 200 && res.status < 300;
+      html += '<tr><td style="font-size:10px">' + ep + '</td><td><span class="badge ' + (ok?'badge-ok':'badge-danger') + '">' + (res.status||'erro') + '</span></td><td style="font-size:10px;max-width:300px;word-break:break-all">' + (res.body||res.error||'—') + '</td></tr>';
+    }
+    html += '</tbody></table>';
+    el.innerHTML = html;
+  } catch(e) {
+    el.innerHTML = '<div class="empty" style="color:var(--danger)">Erro: ' + e.message + '</div>';
+  }
+}
+window.diagnosticar = diagnosticar;
+
 
 document.getElementById('prev-obra').addEventListener('change', () => {
   if(previsionDados.length) carregarPrevision();

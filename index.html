@@ -101,6 +101,7 @@ tr:hover td{background:#f8faf8}
   <button class="nav-btn" onclick="showSec('registro',this)">➕ Registrar atraso</button>
   <button class="nav-btn" onclick="showSec('analise',this)">🧠 Análise IA</button>
   <button class="nav-btn" onclick="showSec('historico',this)">📋 Histórico</button>
+  <button class="nav-btn" onclick="showSec('prevision',this);carregarPrevision()">🔗 Prevision</button>
 </div>
 
 <div class="main">
@@ -261,6 +262,23 @@ tr:hover td{background:#f8faf8}
         <button class="btn btn-danger" onclick="limparTudo()">🗑 Limpar tudo</button>
       </div>
       <div class="table-wrap" id="tabelaHist"></div>
+    </div>
+  </div>
+
+  <div class="sec" id="sec-prevision">
+    <div class="card">
+      <div class="card-title">🔗 Atrasos importados do Prevision</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+        <select id="prev-obra" style="flex:1;min-width:160px">
+          <option value="">Todas as obras</option>
+          <option>Almada</option><option>Montebello</option><option>Reserva das Palmeiras</option>
+          <option>Reserva das Tulipas</option><option>Reserva do Porto</option><option>Miraggio</option>
+        </select>
+        <button class="btn btn-primary" onclick="carregarPrevision()">🔄 Atualizar dados</button>
+        <button class="btn btn-primary" onclick="importarParaFirebase()" id="btnImportar" style="display:none">⬇️ Importar para o painel</button>
+      </div>
+      <div id="prev-status" style="font-size:12px;color:var(--muted);margin-bottom:10px"></div>
+      <div class="table-wrap" id="prev-tabela"></div>
     </div>
   </div>
 
@@ -523,6 +541,104 @@ Estruture: 1.SITUAÇÃO ATUAL 2.PRINCIPAIS PROBLEMAS 3.ANÁLISE LEAN (desperdíc
   }
 }
 window.gerarAnalise = gerarAnalise;
+
+
+let previsionDados = [];
+
+async function carregarPrevision() {
+  const el = document.getElementById('prev-tabela');
+  const status = document.getElementById('prev-status');
+  const filtro = document.getElementById('prev-obra').value;
+  
+  el.innerHTML = '<div class="empty"><span class="spinner"></span> Buscando dados do Prevision...</div>';
+  status.textContent = '';
+  document.getElementById('btnImportar').style.display = 'none';
+
+  try {
+    const r = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'prevision_atrasos' })
+    });
+    const data = await r.json();
+
+    if (data.error) {
+      el.innerHTML = '<div class="empty" style="color:var(--danger)">Erro: ' + data.error + '</div>';
+      return;
+    }
+
+    previsionDados = data.atrasos || [];
+    const lista = filtro ? previsionDados.filter(d => d.obra === filtro) : previsionDados;
+
+    if (data.erros?.length) {
+      status.innerHTML = '<span style="color:var(--warn)">⚠ ' + data.erros.join(' · ') + '</span>';
+    }
+
+    if (!lista.length) {
+      el.innerHTML = '<div class="empty">Nenhum atraso encontrado no Prevision.</div>';
+      return;
+    }
+
+    document.getElementById('btnImportar').style.display = 'inline-flex';
+    status.textContent += ' · ' + lista.length + ' atraso(s) encontrado(s)';
+
+    el.innerHTML = '<table><thead><tr>' +
+      '<th>Obra</th><th>Atividade</th><th>Motivo</th><th>Responsável</th><th>Data prevista</th><th>Status</th>' +
+      '</tr></thead><tbody>' +
+      lista.map(d => '<tr>' +
+        '<td>' + (d.obra||'—') + '</td>' +
+        '<td>' + (d.atividade||'—') + '</td>' +
+        '<td>' + (d.motivo||'—') + '</td>' +
+        '<td>' + (d.responsavel||'—') + '</td>' +
+        '<td>' + (d.dataPrevista||'—') + '</td>' +
+        '<td><span class="badge badge-danger">' + (d.status||'—') + '</span></td>' +
+        '</tr>').join('') +
+      '</tbody></table>';
+  } catch(e) {
+    el.innerHTML = '<div class="empty" style="color:var(--danger)">Erro de conexão com o Worker. Verifique se o Cloudflare Worker está configurado corretamente.</div>';
+  }
+}
+window.carregarPrevision = carregarPrevision;
+
+async function importarParaFirebase() {
+  const filtro = document.getElementById('prev-obra').value;
+  const lista = filtro ? previsionDados.filter(d => d.obra === filtro) : previsionDados;
+  
+  if (!lista.length) return;
+  if (!confirm('Importar ' + lista.length + ' registro(s) do Prevision para o painel de atrasos?')) return;
+
+  const btn = document.getElementById('btnImportar');
+  btn.disabled = true;
+  btn.textContent = 'Importando...';
+
+  let count = 0;
+  for (const reg of lista) {
+    try {
+      await addDoc(col, {
+        ts: Date.now(),
+        data: new Date().toLocaleDateString('pt-BR'),
+        obra: reg.obra,
+        atividade: reg.atividade,
+        motivo: reg.motivo,
+        responsavel: reg.responsavel,
+        dataPrevista: reg.dataPrevista,
+        causa: '—',
+        status: 'Em atraso',
+        origem: 'Prevision'
+      });
+      count++;
+    } catch(e) {}
+  }
+
+  btn.disabled = false;
+  btn.textContent = '⬇️ Importar para o painel';
+  document.getElementById('prev-status').innerHTML += ' · <span style="color:var(--ok)">✓ ' + count + ' registro(s) importado(s) com sucesso!</span>';
+}
+window.importarParaFirebase = importarParaFirebase;
+
+document.getElementById('prev-obra').addEventListener('change', () => {
+  if(previsionDados.length) carregarPrevision();
+});
 
 document.getElementById('dataAtual').textContent = new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
 </script>

@@ -105,6 +105,12 @@ tr:hover td{background:#f8faf8}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:700px){.grid2{grid-template-columns:1fr}}
 .update-ts{font-size:11px;color:var(--muted);margin-left:8px}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:12px;padding:20px;max-width:800px;width:90%;max-height:85vh;display:flex;flex-direction:column;gap:12px}
+.modal h2{font-size:14px;font-weight:500;color:var(--dk)}
+.modal pre{font-size:11px;font-family:monospace;background:#f4f6f4;padding:12px;border-radius:8px;overflow:auto;flex:1;color:#333}
+.modal-btns{display:flex;gap:8px}
 </style>
 </head>
 <body>
@@ -125,6 +131,7 @@ tr:hover td{background:#f8faf8}
     <span class="hdr-date" id="dt"></span>
     <button class="btn-wh" onclick="toggleForm()" id="btnLancar">+ Lançar</button>
     <button class="btn-yl" onclick="atualizarPrevision()" id="btnPrev">🔄 Atualizar Prevision</button>
+    <button class="btn-wh" onclick="debugPrevision()" id="btnDebug">🔍 Diagnóstico</button>
   </div>
 </div>
 
@@ -267,6 +274,16 @@ tr:hover td{background:#f8faf8}
 
 </div>
 
+<div class="modal-bg" id="debugModal" onclick="closeDebug(event)">
+  <div class="modal">
+    <h2>🔍 Diagnóstico Prevision — Almada</h2>
+    <pre id="debugContent">Carregando...</pre>
+    <div class="modal-btns">
+      <button class="btn-g" onclick="copiarDebug()">📋 Copiar</button>
+      <button class="btn-n" onclick="document.getElementById('debugModal').classList.remove('open')">Fechar</button>
+    </div>
+  </div>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script type="module">
 import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
@@ -647,6 +664,38 @@ async function atualizarPrevision(){
   btn.disabled=false; btn.textContent='🔄 Atualizar Prevision';
 }
 window.atualizarPrevision=atualizarPrevision;
+
+
+async function debugPrevision(){
+  document.getElementById('debugModal').classList.add('open');
+  document.getElementById('debugContent').textContent = 'Consultando API do Prevision...';
+  document.getElementById('btnDebug').disabled = true;
+  try{
+    const r = await fetch(WORKER, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ action: 'prevision_debug_detail' })
+    });
+    const data = await r.json();
+    document.getElementById('debugContent').textContent = JSON.stringify(data, null, 2);
+  }catch(e){
+    document.getElementById('debugContent').textContent = 'Erro: ' + e.message;
+  }
+  document.getElementById('btnDebug').disabled = false;
+}
+window.debugPrevision = debugPrevision;
+
+function closeDebug(e){
+  if(e.target === document.getElementById('debugModal'))
+    document.getElementById('debugModal').classList.remove('open');
+}
+window.closeDebug = closeDebug;
+
+function copiarDebug(){
+  navigator.clipboard.writeText(document.getElementById('debugContent').textContent)
+    .then(()=>alert('Copiado!'));
+}
+window.copiarDebug = copiarDebug;
 
 // Firebase listener
 try{

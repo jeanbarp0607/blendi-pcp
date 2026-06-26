@@ -421,12 +421,13 @@ function renderAtividades(key){
   const el=document.getElementById('atBlock');
   if(!d){el.innerHTML='<div class="empty">Clique em "🔄 Atualizar Prevision" para carregar as atividades atrasadas.</div>';return;}
   if(!d.atrasadas?.length){el.innerHTML='<div class="empty">✓ Nenhuma atividade atrasada encontrada para '+nomeObra+'.</div>';return;}
-  el.innerHTML=`<div style="margin-bottom:10px;font-size:12px;color:var(--muted)">${d.atrasadas.length} atividade(s) atrasada(s)</div>
+  el.innerHTML=`<div style="margin-bottom:10px;font-size:12px;color:var(--muted)">${d.atrasadas.length} atividade(s) com atraso detectado · ordenado por severidade</div>
   <div class="table-wrap"><table>
-    <thead><tr><th>Serviço</th><th>Pavimento</th><th>Realizado</th><th>Previsto</th><th>Desvio</th></tr></thead>
+    <thead><tr><th>Serviço</th><th>Pavimento</th><th>Realizado</th><th>Previsto</th><th>Atraso Relativo</th></tr></thead>
     <tbody>${d.atrasadas.slice(0,50).map(a=>{
-      const tag=a.desvio>20?'tag-danger':a.desvio>10?'tag-warn':'tag-ok';
-      return `<tr><td>${a.servico}</td><td>${a.pavimento}</td><td>${a.realizado}%</td><td>${a.previsto}%</td><td><span class="${tag}">-${a.desvio}%</span></td></tr>`;
+      const tag=a.desvioRelPct>30?'tag-danger':a.desvioRelPct>15?'tag-warn':'tag-ok';
+      const unid=a.isQuantidade?'':' %';
+      return `<tr><td>${a.servico}</td><td>${a.pavimento}</td><td>${a.realizado}${unid}</td><td>${a.previsto}${unid}</td><td><span class="${tag}">-${a.desvioRelPct}%</span></td></tr>`;
     }).join('')}</tbody>
   </table></div>`;
 }
@@ -742,6 +743,12 @@ async function atualizarPrevision(){
 
     if(erros.length) console.warn('Erros Prevision:',erros);
 
+    // Salva no sessionStorage para persistir após reload
+    try {
+      sessionStorage.setItem('blendi_prevData', JSON.stringify(prevData));
+      sessionStorage.setItem('blendi_prevTs', ts);
+    } catch(e) {}
+
     // Re-renderiza tudo com dados novos
     renderIndicadores(obraAtual);
     renderAtividades(obraAtual);
@@ -820,6 +827,32 @@ try{
 
 document.getElementById('dt').textContent=new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
 populatePeriodo();
+
+// Restaura dados do Prevision do sessionStorage (persiste entre reloads)
+try {
+  const cached = sessionStorage.getItem('blendi_prevData');
+  if(cached) {
+    prevData = JSON.parse(cached);
+    const ts = sessionStorage.getItem('blendi_prevTs') || '';
+    // Aplica dados cached nas obras
+    Object.entries(prevData).forEach(([key,d])=>{
+      if(!obras[key]) return;
+      const o=obras[key];
+      if(d.avanco && (d.avanco.base>0 || d.avanco.realizado>0)){
+        o.av={base:d.avanco.base, prev:d.avanco.previsto, real:d.avanco.realizado};
+        o.kpi.idp=d.avanco.idp;
+        const mesIdx=o.men.lbl.indexOf(o.mes);
+        if(mesIdx>=0) o.men.idp[mesIdx]=d.avanco.idp;
+        const src=document.getElementById('avSrc');
+        if(src) src.textContent='● Prevision';
+      }
+    });
+    if(Object.keys(prevData).length > 0) {
+      setStatus('dot-on', `Dados do Prevision restaurados${ts?' ('+ts+')':''} · Clique em 🔄 para atualizar`);
+    }
+  }
+} catch(e) { console.log('sessionStorage:', e.message); }
+
 renderIndicadores('almada');
 </script>
 </body>

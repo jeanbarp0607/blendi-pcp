@@ -468,33 +468,50 @@ function renderCurva(key){
 function parseCurva(raw){
   if(!raw) return null;
   try{
-    // Formato Prevision: { base: [...], expected: [...], realized: [...] }
-    // Arrays de valores decimais semanais/mensais
-    if(raw.base || raw.realized || raw.expected){
-      const base  = raw.base     || [];
-      const prev  = raw.expected || raw.planned || [];
-      const real  = raw.realized || raw.actual  || [];
-      const datas = raw.dates    || raw.labels  || raw.periods || [];
+    // Formato confirmado do Prevision:
+    // { base: [...], dates: [...], expected: [...], measured: [...], period_end_dates: [...], realized: [...] }
+    // Valores em decimal (0 a 1), datas como strings
 
-      // Converte para % e cria labels se não tiver datas
-      const maxLen = Math.max(base.length, prev.length, real.length);
-      if(!maxLen) return null;
+    const base     = raw.base     || [];
+    const expected = raw.expected || [];
+    const realized = raw.realized || [];
+    const dates    = raw.period_end_dates || raw.dates || [];
 
-      const lbl = datas.length ? datas.map(d=>String(d).substring(0,10)) :
-                  Array.from({length:maxLen},(_,i)=>`S${i+1}`);
-      const prevArr = (prev.length ? prev : base).map(v=>+(v*100).toFixed(1));
-      const realArr = real.map(v=>+(v*100).toFixed(1));
+    const maxLen = Math.max(base.length, expected.length, realized.length);
+    if(!maxLen) return null;
 
-      return {lbl, prev:prevArr, real:realArr};
-    }
+    // Labels: usa datas se disponíveis, senão semanas
+    const lbl = dates.length
+      ? dates.map(d => {
+          // Converte "2024-01-07" → "jan/24" ou similar
+          try {
+            const dt = new Date(d);
+            const meses = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+            return `${meses[dt.getMonth()]}/${String(dt.getFullYear()).slice(2)}`;
+          } catch(e) { return String(d).substring(0,7); }
+        })
+      : Array.from({length:maxLen},(_,i)=>`S${i+1}`);
 
-    // Fallback: array de objetos
-    const arr = Array.isArray(raw) ? raw : Object.values(raw);
-    if(!arr.length) return null;
-    const lbl  = arr.map((_,i)=>`S${i+1}`);
-    const prev = arr.map(p=>typeof p==='number'?+(p*100).toFixed(1):+((p.expected??p.planned??0)*100).toFixed(1));
-    const real = arr.map(p=>typeof p==='number'?+(p*100).toFixed(1):+((p.actual??p.realized??0)*100).toFixed(1));
-    return (real.some(v=>v>0)||prev.some(v=>v>0))?{lbl,prev,real}:null;
+    // Remove duplicatas de label (meses que aparecem várias vezes por semana)
+    // Reduz para granularidade mensal agrupando por mês
+    const mensal = {};
+    lbl.forEach((l,i)=>{
+      if(!mensal[l]) mensal[l]={base:0,exp:0,real:0,n:0};
+      const m=mensal[l];
+      m.base = Math.max(m.base, (base[i]||0)*100);
+      m.exp  = Math.max(m.exp,  (expected[i]||0)*100);
+      m.real = Math.max(m.real, (realized[i]||0)*100);
+    });
+
+    const lblFinal  = Object.keys(mensal);
+    const prevFinal = Object.values(mensal).map(m=>+m.exp.toFixed(1));
+    const realFinal = Object.values(mensal).map(m=>+m.real.toFixed(1));
+
+    return {
+      lbl: lblFinal,
+      prev: prevFinal,
+      real: realFinal
+    };
   }catch(e){
     console.warn('parseCurva error:',e);
     return null;

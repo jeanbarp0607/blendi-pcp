@@ -466,14 +466,39 @@ function renderCurva(key){
 }
 
 function parseCurva(raw){
+  if(!raw) return null;
   try{
-    const arr=Array.isArray(raw)?raw:(typeof raw==='object'?Object.values(raw):[]);
+    // Formato Prevision: { base: [...], expected: [...], realized: [...] }
+    // Arrays de valores decimais semanais/mensais
+    if(raw.base || raw.realized || raw.expected){
+      const base  = raw.base     || [];
+      const prev  = raw.expected || raw.planned || [];
+      const real  = raw.realized || raw.actual  || [];
+      const datas = raw.dates    || raw.labels  || raw.periods || [];
+
+      // Converte para % e cria labels se não tiver datas
+      const maxLen = Math.max(base.length, prev.length, real.length);
+      if(!maxLen) return null;
+
+      const lbl = datas.length ? datas.map(d=>String(d).substring(0,10)) :
+                  Array.from({length:maxLen},(_,i)=>`S${i+1}`);
+      const prevArr = (prev.length ? prev : base).map(v=>+(v*100).toFixed(1));
+      const realArr = real.map(v=>+(v*100).toFixed(1));
+
+      return {lbl, prev:prevArr, real:realArr};
+    }
+
+    // Fallback: array de objetos
+    const arr = Array.isArray(raw) ? raw : Object.values(raw);
     if(!arr.length) return null;
-    const lbl=arr.map(p=>p.date||p.month||p.periodo||p.label||'');
-    const prev=arr.map(p=>+((p.expected??p.previsto??p.planned??0)*(p.expected<=1?100:1)).toFixed(1));
-    const real=arr.map(p=>+((p.actual??p.realizado??p.completed??0)*(p.actual<=1?100:1)).toFixed(1));
+    const lbl  = arr.map((_,i)=>`S${i+1}`);
+    const prev = arr.map(p=>typeof p==='number'?+(p*100).toFixed(1):+((p.expected??p.planned??0)*100).toFixed(1));
+    const real = arr.map(p=>typeof p==='number'?+(p*100).toFixed(1):+((p.actual??p.realized??0)*100).toFixed(1));
     return (real.some(v=>v>0)||prev.some(v=>v>0))?{lbl,prev,real}:null;
-  }catch(e){return null;}
+  }catch(e){
+    console.warn('parseCurva error:',e);
+    return null;
+  }
 }
 
 function renderCronograma(key){
@@ -606,7 +631,7 @@ async function atualizarPrevision(){
         const idx=o.men.lbl.indexOf(mes);
         if(idx>=0) o.men.idp[idx]=d.avanco.idp;
         obrasAtualizadas++;
-        console.log(`[Prevision] ${d.nome}: Base=${d.avanco.base}% Prev=${d.avanco.previsto}% Real=${d.avanco.realizado}% IDP=${d.avanco.idp}% (${d.avanco.metodo})`);
+        console.log(`[Prevision] ${d.nome} (${d.projectName}): Base=${d.avanco.base}% Prev=${d.avanco.previsto}% Real=${d.avanco.realizado}% IDP=${d.avanco.idp}% | fonte=${d.avanco.fonte} | atraso=${d.avanco.atraso_dias}d`);
       } else {
         // Mantém dados locais se Prevision retornou 0
         console.warn(`[Prevision] ${d.nome}: avanco zerado ou ausente`, d.avanco, 'debug:', d.debug);
@@ -640,7 +665,8 @@ async function atualizarPrevision(){
     // Verifica se alguma obra teve avanço físico real (> 0)
     const comDados=Object.values(prevData).filter(d=>d.avanco&&(d.avanco.base>0||d.avanco.realizado>0)).length;
     if(comDados>0){
-      setStatus('dot-on',`Prevision: ${comDados} obra(s) com dados · ${totalAtrasadas} atividade(s) atrasada(s) · ${ts}`);
+      const atrasoDias=Object.values(prevData).filter(d=>d.avanco?.atraso_dias).map(d=>`${d.nome.split(' ')[0]}: ${d.avanco.atraso_dias}d`).join(' · ');
+      setStatus('dot-on',`Prevision: ${comDados} obra(s) atualizadas · ${ts}${atrasoDias?' | atraso: '+atrasoDias:''}`);
     } else if(obrasAtualizadas>0){
       setStatus('dot-load',`Prevision conectado mas sem dados de medição · Verifique o console (F12) para diagnóstico · ${ts}`);
     } else {

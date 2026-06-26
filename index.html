@@ -169,13 +169,17 @@ tr:hover td{background:#f8faf8}
       <div class="field"><label id="periodoLbl">Semana</label><select id="fPeriodo"></select></div>
       <div class="field"><label>PPC (%)</label><input type="number" id="fPPC" min="0" max="200" step="0.1" placeholder="ex: 69.7"></div>
       <div class="field"><label>Aderência (%)</label><input type="number" id="fAder" min="0" max="300" step="0.1" placeholder="ex: 98.8"></div>
-      <div style="display:flex;align-items:flex-end;gap:8px">
-        <button class="btn-g" onclick="salvar()">✓ Salvar</button>
-        <button class="btn-n" onclick="limparForm()">Limpar</button>
-        <span class="saved-ok" id="savedOk">✓ Salvo!</span>
+      <div class="field">
+        <label>IDP (%) <span style="font-size:10px;color:#854F0B;font-weight:400;text-transform:none">só gráficos</span></label>
+        <input type="number" id="fIDP" min="0" max="200" step="0.1" placeholder="ex: 97.0">
       </div>
     </div>
-    <p style="font-size:11px;color:var(--muted)">IDP e Avanço Físico são atualizados via Prevision · PPC e Aderência são lançados manualmente</p>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+      <button class="btn-g" onclick="salvar()">✓ Salvar</button>
+      <button class="btn-n" onclick="limparForm()">Limpar</button>
+      <span class="saved-ok" id="savedOk">✓ Salvo!</span>
+    </div>
+    <p style="font-size:11px;color:var(--muted)">IDP da rosca = Prevision automático · IDP aqui atualiza apenas os gráficos semanal e mensal · PPC e Aderência sempre manuais</p>
   </div>
 
   <!-- PAGE: INDICADORES -->
@@ -596,7 +600,11 @@ function populatePeriodo(){
   }
 }
 
-function limparForm(){document.getElementById('fPPC').value='';document.getElementById('fAder').value='';}
+function limparForm(){
+  document.getElementById('fPPC').value='';
+  document.getElementById('fAder').value='';
+  document.getElementById('fIDP').value='';
+}
 window.limparForm=limparForm;
 
 async function salvar(){
@@ -604,24 +612,56 @@ async function salvar(){
   const periodo=document.getElementById('fPeriodo').value;
   const ppc=parseFloat(document.getElementById('fPPC').value);
   const ader=parseFloat(document.getElementById('fAder').value);
+  const idpGraf=parseFloat(document.getElementById('fIDP').value);
   if(isNaN(ppc)||isNaN(ader)){alert('Preencha PPC e Aderência.');return;}
+
   const o=obras[obraAtual];
+  // IDP para gráficos: usa o digitado, senão o atual do KPI
+  const idpVal = !isNaN(idpGraf) ? idpGraf : o.kpi.idp;
+
   if(tipo==='sem'){
     const idx=o.sem.lbl.findIndex(l=>l.trim()===periodo.trim());
-    if(idx>=0){o.sem.ppc[idx]=ppc;o.sem.ader[idx]=ader;}
-    else{o.sem.lbl.push(periodo);o.sem.ppc.push(ppc);o.sem.ader.push(ader);o.sem.idp.push(o.kpi.idp);}
-  }else{
+    if(idx>=0){
+      o.sem.ppc[idx]=ppc;
+      o.sem.ader[idx]=ader;
+      if(!isNaN(idpGraf)) o.sem.idp[idx]=idpGraf;
+    } else {
+      o.sem.lbl.push(periodo);
+      o.sem.ppc.push(ppc);
+      o.sem.ader.push(ader);
+      o.sem.idp.push(idpVal);
+    }
+  } else {
     const idx=o.men.lbl.indexOf(periodo);
-    if(idx>=0){o.men.ppc[idx]=ppc;o.men.ader[idx]=ader;}
-    else{o.men.lbl.push(periodo);o.men.ppc.push(ppc);o.men.ader.push(ader);o.men.idp.push(o.kpi.idp);}
-    o.kpi.ppc=ppc;o.kpi.ader=ader;
+    if(idx>=0){
+      o.men.ppc[idx]=ppc;
+      o.men.ader[idx]=ader;
+      if(!isNaN(idpGraf)) o.men.idp[idx]=idpGraf;
+    } else {
+      o.men.lbl.push(periodo);
+      o.men.ppc.push(ppc);
+      o.men.ader.push(ader);
+      o.men.idp.push(idpVal);
+    }
+    o.kpi.ppc=ppc;
+    o.kpi.ader=ader;
   }
-  try{await addDoc(col,{obra:obraAtual,tipo,periodo,ppc,ader,ts:Date.now(),data:new Date().toLocaleDateString('pt-BR')});}
-  catch(e){console.log('FB:',e.message);}
+
+  // Salva no Firebase (inclui IDP se foi digitado)
+  const payload = {
+    obra:obraAtual, tipo, periodo, ppc, ader,
+    ts:Date.now(), data:new Date().toLocaleDateString('pt-BR')
+  };
+  if(!isNaN(idpGraf)) payload.idp=idpGraf;
+
+  try{ await addDoc(col, payload); }
+  catch(e){ console.log('FB:',e.message); }
+
   renderIndicadores(obraAtual);
   limparForm();
   const ok=document.getElementById('savedOk');
-  ok.style.display='inline';setTimeout(()=>ok.style.display='none',3000);
+  ok.style.display='inline';
+  setTimeout(()=>ok.style.display='none',3000);
 }
 window.salvar=salvar;
 
@@ -759,10 +799,18 @@ try{
       const o=obras[r.obra];
       if(r.tipo==='sem'){
         const idx=o.sem.lbl.findIndex(l=>l.trim()===r.periodo?.trim());
-        if(idx>=0){o.sem.ppc[idx]=r.ppc;o.sem.ader[idx]=r.ader;}
+        if(idx>=0){
+          o.sem.ppc[idx]=r.ppc;
+          o.sem.ader[idx]=r.ader;
+          if(r.idp!==undefined) o.sem.idp[idx]=r.idp;
+        }
       }else{
         const idx=o.men.lbl.indexOf(r.periodo);
-        if(idx>=0){o.men.ppc[idx]=r.ppc;o.men.ader[idx]=r.ader;}
+        if(idx>=0){
+          o.men.ppc[idx]=r.ppc;
+          o.men.ader[idx]=r.ader;
+          if(r.idp!==undefined) o.men.idp[idx]=r.idp;
+        }
         if(r.obra===obraAtual){o.kpi.ppc=r.ppc;o.kpi.ader=r.ader;}
       }
     });

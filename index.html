@@ -12,29 +12,39 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .hdr-left{display:flex;align-items:center;gap:12px}
 .hdr h1{color:#fff;font-size:14px;font-weight:500}
 .hdr-sub{color:#a8d5a2;font-size:11px;margin-top:1px}
-.hdr-right{display:flex;align-items:center;gap:10px}
+.hdr-right{display:flex;align-items:center;gap:8px}
 .hdr-date{color:#a8d5a2;font-size:11px}
-.btn-lancar{padding:7px 16px;background:var(--yl);color:var(--dk);border:none;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;transition:.15s;font-family:inherit}
-.btn-lancar:hover{background:#b5c100}
-.nav{background:#0d5c1a;display:flex;border-bottom:1px solid rgba(255,255,255,.08);overflow-x:auto}
-.nav-btn{padding:12px 18px;color:#a8d5a2;background:transparent;border:none;cursor:pointer;font-size:12px;white-space:nowrap;border-bottom:2px solid transparent;transition:.15s;font-family:inherit}
-.nav-btn:hover{color:#fff;background:rgba(255,255,255,.05)}
-.nav-btn.on{color:#fff;border-bottom-color:var(--yl);background:rgba(255,255,255,.07);font-weight:500}
+.btn-yl{padding:7px 14px;background:var(--yl);color:var(--dk);border:none;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;transition:.15s}
+.btn-yl:hover{background:#b5c100}
+.btn-yl:disabled{opacity:.6;cursor:not-allowed}
+.btn-wh{padding:7px 14px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit}
+.btn-wh:hover{background:rgba(255,255,255,.25)}
+.obras-nav{background:#0d5c1a;display:flex;border-bottom:1px solid rgba(255,255,255,.08);overflow-x:auto}
+.obra-btn{padding:10px 16px;color:#a8d5a2;background:transparent;border:none;cursor:pointer;font-size:12px;white-space:nowrap;border-bottom:2px solid transparent;transition:.15s;font-family:inherit}
+.obra-btn:hover{color:#fff;background:rgba(255,255,255,.05)}
+.obra-btn.on{color:#fff;border-bottom-color:var(--yl);background:rgba(255,255,255,.07);font-weight:500}
+.page-tabs{background:#fff;border-bottom:1px solid var(--bd);display:flex;padding:0 20px;gap:0}
+.ptab{padding:12px 20px;font-size:13px;color:var(--muted);background:transparent;border:none;cursor:pointer;border-bottom:2px solid transparent;font-family:inherit;transition:.15s}
+.ptab:hover{color:var(--dk)}
+.ptab.on{color:var(--g);border-bottom-color:var(--g);font-weight:500}
 .main{max-width:1280px;margin:0 auto;padding:16px}
-.form-panel{background:var(--card);border:1.5px solid var(--yl);border-radius:12px;padding:16px;margin-bottom:16px;display:none}
+.page{display:none}.page.on{display:block}
+.status-bar{background:#f0f4f0;border:1px solid #d0e0d0;border-radius:8px;padding:8px 14px;font-size:12px;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:#ccc}
+.dot-on{background:var(--gm)}.dot-err{background:#E24B4A}.dot-load{background:var(--yl)}
+.form-panel{background:var(--card);border:1.5px solid var(--yl);border-radius:12px;padding:16px;margin-bottom:14px;display:none}
 .form-panel.open{display:block}
-.fp-title{font-size:13px;font-weight:500;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
-.fp-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:12px}
-@media(max-width:700px){.fp-grid{grid-template-columns:1fr 1fr}}
-.fp-type{display:flex;gap:10px;margin-bottom:14px}
+.fp-title{font-size:13px;font-weight:500;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.fp-type{display:flex;gap:12px;margin-bottom:12px}
 .fp-type label{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;color:var(--muted)}
-.fp-type input[type=radio]:checked+span{color:var(--g);font-weight:500}
+.fp-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:10px}
+@media(max-width:700px){.fp-grid{grid-template-columns:1fr 1fr}}
 .field label{font-size:11px;color:var(--muted);display:block;margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
 input,select{width:100%;padding:8px 10px;border:1px solid var(--bd);border-radius:8px;font-size:13px;font-family:inherit;background:#fff;color:var(--dk);outline:none}
 input:focus,select:focus{border-color:var(--gm)}
-.btn-save{padding:8px 20px;background:var(--g);color:#fff;border:none;border-radius:8px;font-size:13px;font-family:inherit;cursor:pointer}
-.btn-cancel{padding:8px 14px;background:transparent;color:var(--muted);border:1px solid var(--bd);border-radius:8px;font-size:13px;font-family:inherit;cursor:pointer}
-.saved-ok{font-size:12px;color:#27500A;display:none;margin-left:10px}
+.btn-g{padding:8px 18px;background:var(--g);color:#fff;border:none;border-radius:8px;font-size:13px;font-family:inherit;cursor:pointer}
+.btn-n{padding:8px 12px;background:transparent;color:var(--muted);border:1px solid var(--bd);border-radius:8px;font-size:13px;font-family:inherit;cursor:pointer}
+.saved-ok{font-size:12px;color:#27500A;display:none;margin-left:8px}
 .top-row{display:grid;grid-template-columns:220px 1fr;gap:14px;margin-bottom:14px}
 @media(max-width:700px){.top-row{grid-template-columns:1fr}}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px}
@@ -44,7 +54,7 @@ input:focus,select:focus{border-color:var(--gm)}
 .av-name{font-size:12px;color:var(--muted)}
 .av-val{font-size:13px;font-weight:500}
 .bar-track{height:6px;background:#e8ece8;border-radius:3px;overflow:hidden}
-.bar-fill{height:100%;border-radius:3px;transition:width .4s}
+.bar-fill{height:100%;border-radius:3px;transition:width .5s}
 .kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .kpi{text-align:center;padding:12px 8px;background:#F4F6F4;border-radius:10px}
 .kpi-name{font-size:11px;color:var(--muted);margin-bottom:6px}
@@ -57,7 +67,8 @@ input:focus,select:focus{border-color:var(--gm)}
 .charts-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
 @media(max-width:700px){.charts-row{grid-template-columns:1fr}}
 .chart-card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px}
-.chart-title{font-size:12px;font-weight:500;margin-bottom:6px}
+.chart-title{font-size:13px;font-weight:500;margin-bottom:6px}
+.chart-sub{font-size:11px;color:var(--muted);margin-bottom:8px}
 .leg{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px;font-size:11px;color:var(--muted)}
 .leg-item{display:flex;align-items:center;gap:4px}
 .leg-dot{width:10px;height:3px;border-radius:2px}
@@ -75,9 +86,25 @@ input:focus,select:focus{border-color:var(--gm)}
 .ok-bg{background:#EAF3DE;border-color:#c0ddb0!important}.ok-lbl{color:#27500A}
 .wn-bg{background:#FAEEDA;border-color:#f0d0a0!important}.wn-lbl{color:#633806}
 .dn-bg{background:#FCEBEB;border-color:#f0b0b0!important}.dn-lbl{color:#791F1F}
-.status-bar{background:#f0f4f0;border:1px solid #d0e0d0;border-radius:8px;padding:8px 14px;font-size:12px;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.dot-on{background:var(--gm)}.dot-off{background:#ccc}
+.prev-badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:500;background:#EAF3DE;color:#0A6821;margin-bottom:4px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:var(--g);color:#fff;padding:9px 10px;text-align:left;font-weight:500;font-size:11px;white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid var(--bd);color:var(--dk);vertical-align:middle}
+tr:hover td{background:#f8faf8}
+.tag-danger{display:inline-block;padding:2px 8px;border-radius:6px;background:#FCEBEB;color:#791F1F;font-size:11px;font-weight:500}
+.tag-warn{display:inline-block;padding:2px 8px;border-radius:6px;background:#FAEEDA;color:#633806;font-size:11px;font-weight:500}
+.tag-ok{display:inline-block;padding:2px 8px;border-radius:6px;background:#EAF3DE;color:#27500A;font-size:11px;font-weight:500}
+.empty{text-align:center;padding:32px;color:var(--muted);font-size:13px}
+.prevision-info{background:#EAF3DE;border:1px solid #c0ddb0;border-radius:8px;padding:10px 14px;font-size:12px;color:#27500A;margin-bottom:14px}
+.loading-box{text-align:center;padding:40px;color:var(--muted);font-size:13px}
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid var(--bd);border-top-color:var(--g);border-radius:50%;animation:spin .7s linear infinite;vertical-align:-3px;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.obra-section{margin-bottom:24px}
+.obra-section-title{font-size:14px;font-weight:500;color:var(--g);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--gl)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+.update-ts{font-size:11px;color:var(--muted);margin-left:8px}
 </style>
 </head>
 <body>
@@ -96,95 +123,146 @@ input:focus,select:focus{border-color:var(--gm)}
   </div>
   <div class="hdr-right">
     <span class="hdr-date" id="dt"></span>
-    <button class="btn-lancar" onclick="toggleForm()" id="btnLancar">+ Lançar indicadores</button>
+    <button class="btn-wh" onclick="toggleForm()" id="btnLancar">+ Lançar</button>
+    <button class="btn-yl" onclick="atualizarPrevision()" id="btnPrev">🔄 Atualizar Prevision</button>
   </div>
 </div>
 
-<div class="nav">
-  <button class="nav-btn on" onclick="sel('almada',this)">Almada</button>
-  <button class="nav-btn" onclick="sel('montebello',this)">Montebello</button>
-  <button class="nav-btn" onclick="sel('palmeiras',this)">Res. Palmeiras</button>
-  <button class="nav-btn" onclick="sel('tulipas',this)">Res. Tulipas</button>
-  <button class="nav-btn" onclick="sel('porto',this)">Res. do Porto</button>
-  <button class="nav-btn" onclick="sel('miraggio',this)">Miraggio</button>
+<div class="obras-nav">
+  <button class="obra-btn on" onclick="selObra('almada',this)">Almada</button>
+  <button class="obra-btn" onclick="selObra('montebello',this)">Montebello</button>
+  <button class="obra-btn" onclick="selObra('palmeiras',this)">Res. Palmeiras</button>
+  <button class="obra-btn" onclick="selObra('tulipas',this)">Res. Tulipas</button>
+  <button class="obra-btn" onclick="selObra('porto',this)">Res. do Porto</button>
+  <button class="obra-btn" onclick="selObra('miraggio',this)">Miraggio</button>
+</div>
+
+<div class="page-tabs">
+  <button class="ptab on" onclick="selTab('indicadores',this)">📊 Indicadores</button>
+  <button class="ptab" onclick="selTab('atividades',this)">⚠️ Atividades Atrasadas</button>
+  <button class="ptab" onclick="selTab('curva',this)">📈 Curva S</button>
+  <button class="ptab" onclick="selTab('cronograma',this)">📅 Cronograma Mensal</button>
 </div>
 
 <div class="main">
 
+  <!-- STATUS BAR -->
   <div class="status-bar">
-    <div class="dot dot-on" id="statusDot"></div>
-    <span id="statusTxt">Dados carregados · jun/26 · Conectando ao Firebase...</span>
+    <div class="dot" id="statusDot"></div>
+    <span id="statusTxt">Carregando...</span>
   </div>
 
+  <!-- FORM LANÇAMENTO -->
   <div class="form-panel" id="formPanel">
     <div class="fp-title">
       <span>Lançar indicadores — <span id="fpObra">Almada</span></span>
-      <button class="btn-cancel" onclick="toggleForm()">✕ Fechar</button>
+      <button class="btn-n" onclick="toggleForm()">✕ Fechar</button>
     </div>
     <div class="fp-type">
       <label><input type="radio" name="tipo" value="sem" checked onchange="onTipo()"> <span>Semanal</span></label>
       <label><input type="radio" name="tipo" value="men" onchange="onTipo()"> <span>Mensal (acumulado)</span></label>
     </div>
     <div class="fp-grid">
-      <div class="field"><label id="periodoLbl">Semana</label>
-        <select id="fPeriodo"></select></div>
-      <div class="field"><label>PPC (%)</label>
-        <input type="number" id="fPPC" min="0" max="200" step="0.1" placeholder="ex: 69.7"></div>
-      <div class="field"><label>Aderência (%)</label>
-        <input type="number" id="fAder" min="0" max="300" step="0.1" placeholder="ex: 98.8"></div>
+      <div class="field"><label id="periodoLbl">Semana</label><select id="fPeriodo"></select></div>
+      <div class="field"><label>PPC (%)</label><input type="number" id="fPPC" min="0" max="200" step="0.1" placeholder="ex: 69.7"></div>
+      <div class="field"><label>Aderência (%)</label><input type="number" id="fAder" min="0" max="300" step="0.1" placeholder="ex: 98.8"></div>
       <div style="display:flex;align-items:flex-end;gap:8px">
-        <button class="btn-save" onclick="salvar()">✓ Salvar</button>
-        <button class="btn-cancel" onclick="limparForm()">Limpar</button>
+        <button class="btn-g" onclick="salvar()">✓ Salvar</button>
+        <button class="btn-n" onclick="limparForm()">Limpar</button>
         <span class="saved-ok" id="savedOk">✓ Salvo!</span>
       </div>
     </div>
-    <div style="font-size:11px;color:var(--muted)">IDP é calculado automaticamente pelo Prevision · Avanço Físico atualizado via API</div>
+    <p style="font-size:11px;color:var(--muted)">IDP e Avanço Físico são atualizados via Prevision · PPC e Aderência são lançados manualmente</p>
   </div>
 
-  <div class="top-row">
+  <!-- PAGE: INDICADORES -->
+  <div class="page on" id="page-indicadores">
+    <div class="top-row">
+      <div class="card">
+        <div class="lbl">Avanço Físico <span style="color:#0A6821;font-weight:400;text-transform:none;font-size:10px" id="avSrc">● local</span></div>
+        <div id="avBlock"></div>
+      </div>
+      <div>
+        <div class="lbl" style="padding-left:2px">Indicadores — <span id="mesLbl"></span></div>
+        <div class="kpi-row" id="kpiGrid"></div>
+      </div>
+    </div>
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-title">Evolução semanal</div>
+        <div class="leg">
+          <span class="leg-item"><span class="leg-dot" style="background:#378ADD"></span>IDP</span>
+          <span class="leg-item"><span class="leg-dot" style="background:#1D9E75"></span>PPC</span>
+          <span class="leg-item"><span class="leg-dot" style="background:#7F77DD"></span>Aderência</span>
+          <span class="leg-item"><span class="leg-dash"></span>Metas</span>
+        </div>
+        <div style="position:relative;width:100%;height:220px">
+          <canvas id="cSem" role="img" aria-label="Evolução semanal">Gráfico semanal.</canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Evolução mensal</div>
+        <div class="leg">
+          <span class="leg-item"><span class="leg-dot" style="background:#378ADD"></span>IDP</span>
+          <span class="leg-item"><span class="leg-dot" style="background:#1D9E75"></span>PPC</span>
+          <span class="leg-item"><span class="leg-dot" style="background:#7F77DD"></span>Aderência</span>
+          <span class="leg-item"><span class="leg-dash"></span>Metas</span>
+        </div>
+        <div style="position:relative;width:100%;height:220px">
+          <canvas id="cMen" role="img" aria-label="Evolução mensal">Gráfico mensal.</canvas>
+        </div>
+      </div>
+    </div>
+    <div class="diag">
+      <div class="diag-hdr"><span class="diag-title">Diagnóstico</span><span class="badge" id="diagBadge"></span></div>
+      <div class="dg" id="diagGrid"></div>
+    </div>
+  </div>
+
+  <!-- PAGE: ATIVIDADES ATRASADAS -->
+  <div class="page" id="page-atividades">
     <div class="card">
-      <div class="lbl">Avanço Físico <span style="color:#0A6821;font-weight:400;text-transform:none;font-size:10px">● Prevision</span></div>
-      <div id="avBlock"></div>
-    </div>
-    <div>
-      <div class="lbl" style="padding-left:2px">Indicadores — <span id="mesLbl"></span></div>
-      <div class="kpi-row" id="kpiGrid"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div>
+          <div class="chart-title">Atividades Atrasadas — <span id="atObraNome">Almada</span></div>
+          <div class="chart-sub">Atividades onde realizado &lt; previsto · Fonte: Prevision API</div>
+        </div>
+        <span class="update-ts" id="atTs"></span>
+      </div>
+      <div id="atBlock"><div class="empty">Clique em "🔄 Atualizar Prevision" para carregar as atividades atrasadas.</div></div>
     </div>
   </div>
 
-  <div class="charts-row">
-    <div class="chart-card">
-      <div class="chart-title">Evolução semanal</div>
-      <div class="leg">
-        <span class="leg-item"><span class="leg-dot" style="background:#378ADD"></span>IDP</span>
-        <span class="leg-item"><span class="leg-dot" style="background:#1D9E75"></span>PPC</span>
-        <span class="leg-item"><span class="leg-dot" style="background:#7F77DD"></span>Aderência</span>
-        <span class="leg-item"><span class="leg-dash"></span>Metas</span>
+  <!-- PAGE: CURVA S -->
+  <div class="page" id="page-curva">
+    <div class="grid2" style="margin-bottom:14px">
+      <div class="chart-card">
+        <div class="chart-title">Curva S — Avanço Físico</div>
+        <div class="chart-sub">Previsto vs Realizado · Fonte: Prevision API</div>
+        <div style="position:relative;width:100%;height:250px">
+          <canvas id="cCurvaFisico" role="img" aria-label="Curva S física">Curva S física.</canvas>
+        </div>
       </div>
-      <div style="position:relative;width:100%;height:220px">
-        <canvas id="cSem" role="img" aria-label="Evolução semanal">Gráfico semanal.</canvas>
-      </div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Evolução mensal</div>
-      <div class="leg">
-        <span class="leg-item"><span class="leg-dot" style="background:#378ADD"></span>IDP</span>
-        <span class="leg-item"><span class="leg-dot" style="background:#1D9E75"></span>PPC</span>
-        <span class="leg-item"><span class="leg-dot" style="background:#7F77DD"></span>Aderência</span>
-        <span class="leg-item"><span class="leg-dash"></span>Metas</span>
-      </div>
-      <div style="position:relative;width:100%;height:220px">
-        <canvas id="cMen" role="img" aria-label="Evolução mensal">Gráfico mensal.</canvas>
+      <div class="chart-card">
+        <div class="chart-title">Curva S — Financeiro</div>
+        <div class="chart-sub">Previsto vs Realizado · Fonte: Prevision API</div>
+        <div style="position:relative;width:100%;height:250px">
+          <canvas id="cCurvaFin" role="img" aria-label="Curva S financeira">Curva S financeira.</canvas>
+        </div>
       </div>
     </div>
+    <div id="curvaBlock"><div class="empty">Clique em "🔄 Atualizar Prevision" para carregar a Curva S.</div></div>
   </div>
 
-  <div class="diag">
-    <div class="diag-hdr">
-      <span class="diag-title">Diagnóstico</span>
-      <span class="badge" id="diagBadge"></span>
+  <!-- PAGE: CRONOGRAMA MENSAL -->
+  <div class="page" id="page-cronograma">
+    <div class="card">
+      <div style="margin-bottom:14px">
+        <div class="chart-title">Cronograma Físico Mensal — <span id="cronObraNome">Almada</span></div>
+        <div class="chart-sub">Progressão por serviço · Fonte: Prevision API</div>
+      </div>
+      <div id="cronBlock"><div class="empty">Clique em "🔄 Atualizar Prevision" para carregar o cronograma mensal.</div></div>
     </div>
-    <div class="dg" id="diagGrid"></div>
   </div>
 
 </div>
@@ -192,124 +270,90 @@ input:focus,select:focus{border-color:var(--gm)}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script type="module">
 import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import{getFirestore,collection,addDoc,getDocs,query,orderBy,onSnapshot}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import{getFirestore,collection,addDoc,onSnapshot}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-const firebaseConfig={
-  apiKey:"AIzaSyABpVb-2iMuw9EBB5rgQgbVh2KlR8qDhTs",
-  authDomain:"teste-d86eb.firebaseapp.com",
-  projectId:"teste-d86eb",
-  storageBucket:"teste-d86eb.firebasestorage.app",
-  messagingSenderId:"2247264333",
-  appId:"1:2247264333:web:e9e534aff7bbdd204df404"
-};
-
-const app=initializeApp(firebaseConfig);
+const FB={apiKey:"AIzaSyABpVb-2iMuw9EBB5rgQgbVh2KlR8qDhTs",authDomain:"teste-d86eb.firebaseapp.com",
+  projectId:"teste-d86eb",storageBucket:"teste-d86eb.firebasestorage.app",
+  messagingSenderId:"2247264333",appId:"1:2247264333:web:e9e534aff7bbdd204df404"};
+const app=initializeApp(FB);
 const db=getFirestore(app);
 const col=collection(db,'indicadores');
 
+const WORKER='https://patient-heart-15b6.jean-barp10.workers.dev';
 const C=2*Math.PI*30, M_PPC=85, M_ADER=95, M_IDP=95;
-let obraAtual='almada', cS=null, cM=null;
+let obraAtual='almada', tabAtual='indicadores', cS=null, cM=null, cCF=null, cCFin=null;
+let prevData={};
 
 const obras={
-  almada:{mes:'jun/26',
-    av:{base:62.8,prev:61.3,real:61.3},
-    kpi:{idp:98.0,ppc:69.7,ader:98.8},
+  almada:{mes:'jun/26',av:{base:62.8,prev:61.3,real:61.3},kpi:{idp:98,ppc:69.7,ader:98.8},
     sem:{lbl:['Sem 1','Sem 2','Sem 3','Sem 4','Sem 5','Sem 6','Sem 7','Sem 8','Sem 9','Sem 10','Sem 11','Sem 12','Sem 13','Sem 14','Sem 15','Sem 16','Sem 17','Sem 18','Sem 19','Sem 20','Sem 21','Sem 22','Sem 23','Sem 24','Sem 25','Sem 26','Sem 27','Sem 28','Sem 29','Sem 30','Sem 31','Sem 32','Sem 33','Sem 34','Sem 35','Sem 36','Sem 37','Sem 38','Sem 39','Sem 40','Sem 41'],
       idp:[96,95,93,93,91,90,95,94,98,102,102,104,104,103,104,102,102,99,97,97,98,97,97,97,96,96,98,98,97,96,96,98,97,97,97,98,97,97,98,97,98],
       ppc:[25.8,38.6,17,30.9,57.1,31.6,39.5,16.1,96.5,32.7,33.3,45.3,80,31.7,40,19,100,28.4,30,30,28,48.2,31.8,19.3,72.2,45.7,45.7,22.6,28.3,38,43.5,34.8,71.8,27.5,22.8,11.4,98.6,58.1,35.9,88.2,60.6],
       ader:[146.5,71.8,88,67.3,91.5,48.4,214.8,54.6,137.1,116.3,94.1,95.4,109,72.3,95.8,49.1,134.3,43.6,61.6,61.6,89.4,85.2,91.2,83.9,96.2,113.5,113.5,82.5,86.6,84.5,90.1,115.3,103,105.9,98.8,79.6,108.7,80.4,88.7,101.1,97.8]},
     men:{lbl:['ago/25','set/25','out/25','nov/25','dez/25','jan/26','fev/26','mar/26','abr/26','mai/26','jun/26'],
-      idp:[93,94,104,102,97,97,98,98,98,98,98],
-      ppc:[47.7,67.8,84,64.1,65.5,60.6,78.3,60,66.9,87.5,69.7],
-      ader:[85.7,84.7,112.2,78.5,78.9,84.4,115.6,96.6,97.5,72.9,98.8]}},
-  montebello:{mes:'jun/26',
-    av:{base:35,prev:38.1,real:37.7},
-    kpi:{idp:108,ppc:75,ader:81.8},
+      idp:[93,94,104,102,97,97,98,98,98,98,98],ppc:[47.7,67.8,84,64.1,65.5,60.6,78.3,60,66.9,87.5,69.7],ader:[85.7,84.7,112.2,78.5,78.9,84.4,115.6,96.6,97.5,72.9,98.8]}},
+  montebello:{mes:'jun/26',av:{base:35,prev:38.1,real:37.7},kpi:{idp:108,ppc:75,ader:81.8},
     sem:{lbl:['Sem 1','Sem 2','Sem 3','Sem 4','Sem 5','Sem 6','Sem 7','Sem 8','Sem 9','Sem 10','Sem 11','Sem 12','Sem 13','Sem 14','Sem 15','Sem 16','Sem 17','Sem 18','Sem 19','Sem 20','Sem 21','Sem 22','Sem 23','Sem 24','Sem 25','Sem 26','Sem 27','Sem 28','Sem 29','Sem 30','Sem 31','Sem 32','Sem 33'],
       idp:[0,0,69,69,58,56,61,62,65,62,62,62,76,75,81,91,97,97,100,96,100,97,101,105,105,110,111,111,110,109,110,112,108],
       ppc:[0,0,66.7,25,100,66.7,50,50,100,39.1,20,20,66.7,22.6,23.7,25,66.2,32,32,14.6,90.9,35.5,55,59.6,92.5,55.6,39.5,17.1,91.5,48.1,53.1,42,75],
       ader:[0,0,100,28.7,100,114.7,114.1,81.7,104.5,57.2,68.9,69,121.2,47.4,81.2,112.6,136.1,43.2,43.2,85,111.9,74,113.8,127.4,110.8,110.9,105,74.1,108.7,74.7,90.6,115.7,81.8]},
     men:{lbl:['out/25','nov/25','dez/25','jan/26','fev/26','mar/26','abr/26','mai/26','jun/26'],
-      idp:[69,62,62,91,96,105,110,112,108],
-      ppc:[33.3,60,51.3,57.3,50,91.8,90.8,78.1,75],
-      ader:[68.8,101.1,72.1,86.8,98.6,110.4,101.8,95.7,81.8]}},
-  palmeiras:{mes:'jun/26',
-    av:{base:31.9,prev:21.2,real:20.3},
-    kpi:{idp:64,ppc:40.9,ader:50},
+      idp:[69,62,62,91,96,105,110,112,108],ppc:[33.3,60,51.3,57.3,50,91.8,90.8,78.1,75],ader:[68.8,101.1,72.1,86.8,98.6,110.4,101.8,95.7,81.8]}},
+  palmeiras:{mes:'jun/26',av:{base:31.9,prev:21.2,real:20.3},kpi:{idp:64,ppc:40.9,ader:50},
     sem:{lbl:['Sem 1','Sem 2','Sem 3','Sem 4','Sem 5','Sem 6','Sem 7','Sem 8','Sem 9','Sem 10','Sem 11','Sem 12','Sem 13','Sem 14','Sem 15','Sem 16','Sem 17','Sem 18','Sem 19','Sem 20','Sem 21','Sem 22','Sem 23','Sem 24','Sem 25','Sem 26','Sem 27','Sem 28','Sem 29','Sem 30','Sem 31','Sem 32'],
       idp:[117,123,108,97,109,124,120,95,73,64,64,64,63,62,63,66,69,65,68,70,69,64,66,63,61,61,59,59,60,61,63,64],
       ppc:[100,100,33.3,33.3,100,100,80,16.7,100,14.3,14.3,14.3,80,50,50,38.1,80,47.1,47.1,34.8,90,35.3,44.4,30,100,58.3,33.3,28.6,53.8,69.2,20,26.7],
       ader:[117.5,100,38.3,117.3,100,113.1,96.8,61.9,100,35.4,35.4,35.4,97.5,76.6,82.5,118.3,95.5,63.5,63.5,95.5,82.5,51.8,66.3,42.5,108,85.4,66,57.7,88,110.1,99.4,118.7]},
     men:{lbl:['out/25','nov/25','dez/25','jan/26','fev/26','mar/26','abr/26','mai/26','jun/26'],
-      idp:[97,95,64,66,70,63,59,64,64],
-      ppc:[66.7,55.6,33.3,50,62.5,66.7,55.6,58.8,40.9],
-      ader:[91.9,90.2,45,94.4,98.6,56.4,76.5,103,50]}},
-  tulipas:{mes:'jun/26',
-    av:{base:12.8,prev:10.3,real:10.1},
-    kpi:{idp:79,ppc:57.6,ader:88},
+      idp:[97,95,64,66,70,63,59,64,64],ppc:[66.7,55.6,33.3,50,62.5,66.7,55.6,58.8,40.9],ader:[91.9,90.2,45,94.4,98.6,56.4,76.5,103,50]}},
+  tulipas:{mes:'jun/26',av:{base:12.8,prev:10.3,real:10.1},kpi:{idp:79,ppc:57.6,ader:88},
     sem:{lbl:['Sem 1','Sem 2','Sem 3','Sem 4','Sem 5','Sem 6','Sem 7','Sem 8','Sem 9','Sem 10','Sem 11','Sem 12','Sem 13','Sem 14','Sem 15','Sem 16','Sem 17','Sem 18','Sem 19','Sem 20','Sem 21','Sem 22'],
       idp:[100,100,100,100,120,120,120,120,131,131,143,121,108,96,83,84,87,83,79,78,78,79],
       ppc:[100,100,100,100,67,67,67,67,33.3,33.3,14.3,14.3,90,33.3,10.5,25,83.3,38.9,13,7.1,92.9,57.6],
       ader:[100,100,100,100,100,100,100,100,88.5,88.5,211.3,68.2,126,40.5,36.8,56.4,155.7,67.8,40.5,50.5,113.2,88]},
     men:{lbl:['jan/26','fev/26','mar/26','abr/26','mai/26','jun/26'],
-      idp:[100,120,120,84,78,79],
-      ppc:[100,66.7,36.4,47.5,48.2,57.6],
-      ader:[100,100,91.3,59.7,69.4,88]}},
-  porto:{mes:'jun/26',
-    av:{base:68.6,prev:51.7,real:51.7},
-    kpi:{idp:75,ppc:37,ader:104.3},
+      idp:[100,120,120,84,78,79],ppc:[100,66.7,36.4,47.5,48.2,57.6],ader:[100,100,91.3,59.7,69.4,88]}},
+  porto:{mes:'jun/26',av:{base:68.6,prev:51.7,real:51.7},kpi:{idp:75,ppc:37,ader:104.3},
     sem:{lbl:['Sem 1','Sem 2','Sem 3','Sem 4','Sem 5','Sem 6','Sem 7','Sem 8','Sem 9','Sem 10','Sem 11','Sem 12','Sem 13','Sem 14','Sem 15','Sem 16','Sem 17','Sem 18','Sem 19','Sem 20','Sem 21','Sem 22','Sem 23','Sem 24','Sem 25','Sem 26','Sem 27','Sem 28','Sem 29','Sem 30','Sem 31','Sem 32','Sem 33','Sem 34','Sem 35','Sem 36','Sem 37','Sem 38'],
       idp:[103,103,99,98,96,95,94,95,92,92,91,91,89,89,89,89,89,86,86,87,85,83,82,82,82,81,80,79,78,77,76,76,76,76,75,75,75,75],
       ppc:[67.7,92.1,76.1,60.5,81.9,50,50,26.3,94.1,91.2,53.8,32.4,74.3,49.4,49.4,49.4,25.6,34.4,16.2,31.3,100,13.3,13.3,31.5,82.8,23.9,3.9,2.9,57.1,10.7,8.8,8.9,37.8,16.7,16.5,6.7,66.7,37],
       ader:[135.7,115.9,102.2,83.5,101.4,97.4,97.8,73.5,107.2,104.6,74.7,58.4,115.6,58,58,58,73.3,81.7,57.8,78,125,45.5,45.5,48.9,129.6,43,53.8,32.1,73.9,40.2,35.3,98.8,96.8,79.7,52.4,71.1,100,104.3]},
     men:{lbl:['set/25','out/25','nov/25','dez/25','jan/26','fev/26','mar/26','abr/26','mai/26','jun/26'],
-      idp:[98,95,91,89,87,82,79,76,75,75],
-      ppc:[84.4,74.9,71.2,65.3,45.7,61.3,27,34,39.9,37],
-      ader:[106.3,92.1,78,76.8,71.8,64,57,64,70.6,104.3]}},
-  miraggio:{mes:'jun/26',
-    av:{base:3.6,prev:2.9,real:2.9},
-    kpi:{idp:82,ppc:85.7,ader:132.6},
+      idp:[98,95,91,89,87,82,79,76,75,75],ppc:[84.4,74.9,71.2,65.3,45.7,61.3,27,34,39.9,37],ader:[106.3,92.1,78,76.8,71.8,64,57,64,70.6,104.3]}},
+  miraggio:{mes:'jun/26',av:{base:3.6,prev:2.9,real:2.9},kpi:{idp:82,ppc:85.7,ader:132.6},
     sem:{lbl:['Sem 1','Sem 2','Sem 3','Sem 4','Sem 5','Sem 6','Sem 7'],
-      idp:[100,106,120,122,115,100,82],
-      ppc:[100,100,50,66.7,33.3,100,85.7],
-      ader:[100,123.2,230.4,128.6,96.4,153.8,132.6]},
-    men:{lbl:['mai/26','jun/26'],
-      idp:[82,82],ppc:[75,85.7],ader:[125.4,132.6]}}
+      idp:[100,106,120,122,115,100,82],ppc:[100,100,50,66.7,33.3,100,85.7],ader:[100,123.2,230.4,128.6,96.4,153.8,132.6]},
+    men:{lbl:['mai/26','jun/26'],idp:[82,82],ppc:[75,85.7],ader:[125.4,132.6]}}
 };
 
 const obraNomes={almada:'Almada',montebello:'Montebello',palmeiras:'Reserva das Palmeiras',
   tulipas:'Reserva das Tulipas',porto:'Reserva do Porto',miraggio:'Miraggio'};
 
-function cor(v,m){return v>=m?'#1D9E75':v>=m*.9?'#E4A020':'#E24B4A'}
+function setStatus(cls,txt){
+  document.getElementById('statusDot').className='dot '+cls;
+  document.getElementById('statusTxt').textContent=txt;
+}
 
+function cor(v,m){return v>=m?'#1D9E75':v>=m*.9?'#E4A020':'#E24B4A'}
 function donut(v,m){
   const f=Math.min(v/100,1)*C,c=cor(v,m);
   return `<div class="donut"><svg width="72" height="72" viewBox="0 0 72 72"><circle cx="36" cy="36" r="30" fill="none" stroke="#e8ece8" stroke-width="7"/><circle cx="36" cy="36" r="30" fill="none" stroke="${c}" stroke-width="7" stroke-dasharray="${f.toFixed(1)} ${C.toFixed(1)}" stroke-linecap="round"/></svg><span class="donut-val" style="color:${c}">${v}%</span></div>`;
 }
-
-function metaLine(lbl,val){
-  return{label:'',data:lbl.map(()=>val),borderColor:'#999',borderWidth:1.2,borderDash:[4,3],pointRadius:0,tension:0};
-}
-
+function metaLine(lbl,v){return{label:'',data:lbl.map(()=>v),borderColor:'#999',borderWidth:1.2,borderDash:[4,3],pointRadius:0,tension:0};}
 function buildChart(id,labels,ds,old){
   if(old)old.destroy();
-  return new Chart(document.getElementById(id),{
-    type:'line',data:{labels,datasets:ds},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false}},
-      scales:{
-        y:{min:0,max:130,ticks:{callback:v=>v+'%',font:{size:9}},grid:{color:'rgba(0,0,0,0.05)'}},
-        x:{ticks:{font:{size:9},maxRotation:45,autoSkip:true,maxTicksLimit:12},grid:{display:false}}
-      }}
-  });
+  return new Chart(document.getElementById(id),{type:'line',data:{labels,datasets:ds},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{y:{min:0,max:130,ticks:{callback:v=>v+'%',font:{size:9}},grid:{color:'rgba(0,0,0,0.05)'}},
+        x:{ticks:{font:{size:9},maxRotation:45,autoSkip:true,maxTicksLimit:12},grid:{display:false}}}}});
 }
 
-function diagTipo(v,m){return v>=m?'ok':v>=m*.9?'warn':'danger'}
-
-function render(key){
+function renderIndicadores(key){
   const o=obras[key];
   document.getElementById('mesLbl').textContent=o.mes;
   document.getElementById('fpObra').textContent=obraNomes[key];
+  document.getElementById('atObraNome').textContent=obraNomes[key];
+  document.getElementById('cronObraNome').textContent=obraNomes[key];
 
   const av=o.av,mx=Math.max(av.base,av.prev,av.real);
   document.getElementById('avBlock').innerHTML=[
@@ -340,38 +384,118 @@ function render(key){
   ],cM);
 
   const diag=[
-    {lbl:'IDP',v:k.idp,m:M_IDP,txtOk:'dentro da meta.',txtFail:'abaixo da meta. Risco de atraso.'},
-    {lbl:'PPC',v:k.ppc,m:M_PPC,txtOk:'dentro da meta. Boa execução semanal.',txtFail:'abaixo de 85%. Revisar programação.'},
-    {lbl:'Aderência',v:k.ader,m:M_ADER,txtOk:'dentro da meta.',txtFail:'abaixo da meta. Verificar desvios.'}
+    {lbl:'IDP',v:k.idp,m:M_IDP,ok:'dentro da meta.',fail:'abaixo da meta. Risco de atraso no prazo.'},
+    {lbl:'PPC',v:k.ppc,m:M_PPC,ok:'dentro da meta. Boa execução semanal.',fail:'abaixo de 85%. Revisar programação.'},
+    {lbl:'Aderência',v:k.ader,m:M_ADER,ok:'dentro da meta.',fail:'abaixo da meta. Verificar desvios.'}
   ];
   const al=diag.filter(d=>d.v<d.m).length;
   const b=document.getElementById('diagBadge');
   b.textContent=al===0?'✓ Todas as metas atingidas':al===1?'⚠ 1 indicador em alerta':`⚠ ${al} indicadores em alerta`;
   b.className='badge '+(al===0?'b-ok':al===1?'b-warn':'b-danger');
   document.getElementById('diagGrid').innerHTML=diag.map(d=>{
-    const t=diagTipo(d.v,d.m);
-    return `<div class="di ${t==='ok'?'ok-bg':t==='warn'?'wn-bg':'dn-bg'}"><div class="di-lbl ${t==='ok'?'ok-lbl':t==='warn'?'wn-lbl':'dn-lbl'}">${d.lbl} — ${d.v}%</div><div class="di-txt">${d.v>=d.m?d.txtOk:d.txtFail}</div></div>`;
+    const t=d.v>=d.m?'ok':d.v>=d.m*.9?'wn':'dn';
+    return `<div class="di ${t}-bg"><div class="di-lbl ${t}-lbl">${d.lbl} — ${d.v}%</div><div class="di-txt">${d.v>=d.m?d.ok:d.fail}</div></div>`;
   }).join('');
 }
 
-function sel(key,btn){
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
+function renderAtividades(key){
+  const nomeObra=obraNomes[key];
+  const d=prevData[nomeObra];
+  const el=document.getElementById('atBlock');
+  if(!d){el.innerHTML='<div class="empty">Clique em "🔄 Atualizar Prevision" para carregar as atividades atrasadas.</div>';return;}
+  if(!d.atrasadas?.length){el.innerHTML='<div class="empty">✓ Nenhuma atividade atrasada encontrada para '+nomeObra+'.</div>';return;}
+  el.innerHTML=`<div style="margin-bottom:10px;font-size:12px;color:var(--muted)">${d.atrasadas.length} atividade(s) atrasada(s)</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Serviço</th><th>Pavimento</th><th>Realizado</th><th>Previsto</th><th>Desvio</th></tr></thead>
+    <tbody>${d.atrasadas.slice(0,50).map(a=>{
+      const tag=a.desvio>20?'tag-danger':a.desvio>10?'tag-warn':'tag-ok';
+      return `<tr><td>${a.servico}</td><td>${a.pavimento}</td><td>${a.realizado}%</td><td>${a.previsto}%</td><td><span class="${tag}">-${a.desvio}%</span></td></tr>`;
+    }).join('')}</tbody>
+  </table></div>`;
+}
+
+function renderCurva(key){
+  const nomeObra=obraNomes[key];
+  const d=prevData[nomeObra];
+  const el=document.getElementById('curvaBlock');
+  if(!d||!d.curva){el.innerHTML='<div class="empty">Clique em "🔄 Atualizar Prevision" para carregar a Curva S.</div>';return;}
+  el.innerHTML='';
+
+  // Tenta parsear a curva S (formato pode variar)
+  try {
+    const curva=Array.isArray(d.curva)?d.curva:Object.values(d.curva||{});
+    if(!curva.length){el.innerHTML='<div class="empty">Dados da Curva S não disponíveis para '+nomeObra+'.</div>';return;}
+    const labels=curva.map(p=>p.date||p.month||p.periodo||p[0]||'');
+    const prev=curva.map(p=>+(p.expected||p.previsto||p.planned||p[1]||0)*100);
+    const real=curva.map(p=>+(p.actual||p.realizado||p.completed||p[2]||0)*100);
+    if(cCF)cCF.destroy();
+    cCF=new Chart(document.getElementById('cCurvaFisico'),{type:'line',
+      data:{labels,datasets:[
+        {label:'Previsto',data:prev,borderColor:'#185FA5',backgroundColor:'transparent',borderWidth:2,pointRadius:2,tension:.4},
+        {label:'Realizado',data:real,borderColor:'#0A6821',backgroundColor:'rgba(10,104,33,.1)',borderWidth:2,pointRadius:2,tension:.4,fill:true}
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:true,labels:{font:{size:11}}}},
+        scales:{y:{ticks:{callback:v=>v.toFixed(1)+'%',font:{size:9}},grid:{color:'rgba(0,0,0,0.05)'}},
+          x:{ticks:{font:{size:9},maxRotation:45,autoSkip:true,maxTicksLimit:12},grid:{display:false}}}}});
+  } catch(e){
+    el.innerHTML=`<div class="empty">Formato da Curva S não reconhecido: ${e.message}<br><small style="font-family:monospace">${JSON.stringify(d.curva).substring(0,200)}</small></div>`;
+  }
+}
+
+function renderCronograma(key){
+  const nomeObra=obraNomes[key];
+  const d=prevData[nomeObra];
+  const el=document.getElementById('cronBlock');
+  if(!d||!d.cronograma){el.innerHTML='<div class="empty">Clique em "🔄 Atualizar Prevision" para carregar o cronograma.</div>';return;}
+  try {
+    const cron=d.cronograma;
+    // Tenta exibir como tabela
+    if(Array.isArray(cron)&&cron.length){
+      const headers=Object.keys(cron[0]);
+      el.innerHTML=`<div class="table-wrap"><table>
+        <thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+        <tbody>${cron.slice(0,30).map(row=>`<tr>${headers.map(h=>`<td>${row[h]??'—'}</td>`).join('')}</tr>`).join('')}</tbody>
+      </table></div>`;
+    } else {
+      el.innerHTML=`<pre style="font-size:11px;overflow:auto;padding:10px;background:#f8f8f8;border-radius:8px">${JSON.stringify(cron,null,2).substring(0,2000)}</pre>`;
+    }
+  } catch(e){
+    el.innerHTML=`<div class="empty">Erro ao processar cronograma: ${e.message}</div>`;
+  }
+}
+
+function selObra(key,btn){
+  document.querySelectorAll('.obra-btn').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
   obraAtual=key;
-  render(key);
-  populatePeriodo();
+  renderIndicadores(key);
+  renderAtividades(key);
+  renderCurva(key);
+  renderCronograma(key);
+  document.getElementById('atObraNome').textContent=obraNomes[key];
+  document.getElementById('cronObraNome').textContent=obraNomes[key];
 }
-window.sel=sel;
+window.selObra=selObra;
+
+function selTab(id,btn){
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('page-'+id).classList.add('on');
+  tabAtual=id;
+}
+window.selTab=selTab;
 
 function toggleForm(){
   const p=document.getElementById('formPanel');
   const open=p.classList.toggle('open');
-  document.getElementById('btnLancar').textContent=open?'✕ Fechar':'+ Lançar indicadores';
+  document.getElementById('btnLancar').textContent=open?'✕ Fechar':'+ Lançar';
   if(open)populatePeriodo();
 }
 window.toggleForm=toggleForm;
 
-function onTipo(){populatePeriodo()}
+function onTipo(){populatePeriodo();}
 window.onTipo=onTipo;
 
 function populatePeriodo(){
@@ -381,9 +505,9 @@ function populatePeriodo(){
   sel.innerHTML='';
   if(tipo==='sem'){
     for(let i=1;i<=50;i++){const o=document.createElement('option');o.value=`Sem ${i}`;o.textContent=`Semana ${i}`;sel.appendChild(o);}
-  } else {
-    const meses=['ago/25','set/25','out/25','nov/25','dez/25','jan/26','fev/26','mar/26','abr/26','mai/26','jun/26','jul/26','ago/26','set/26','out/26','nov/26','dez/26'];
-    meses.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;sel.appendChild(o);});
+  }else{
+    ['ago/25','set/25','out/25','nov/25','dez/25','jan/26','fev/26','mar/26','abr/26','mai/26','jun/26','jul/26','ago/26','set/26','out/26','nov/26','dez/26']
+      .forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;sel.appendChild(o);});
     sel.value='jun/26';
   }
 }
@@ -397,36 +521,80 @@ async function salvar(){
   const ppc=parseFloat(document.getElementById('fPPC').value);
   const ader=parseFloat(document.getElementById('fAder').value);
   if(isNaN(ppc)||isNaN(ader)){alert('Preencha PPC e Aderência.');return;}
-
   const o=obras[obraAtual];
   if(tipo==='sem'){
     const idx=o.sem.lbl.findIndex(l=>l.trim()===periodo.trim());
     if(idx>=0){o.sem.ppc[idx]=ppc;o.sem.ader[idx]=ader;}
     else{o.sem.lbl.push(periodo);o.sem.ppc.push(ppc);o.sem.ader.push(ader);o.sem.idp.push(o.kpi.idp);}
-  } else {
+  }else{
     const idx=o.men.lbl.indexOf(periodo);
     if(idx>=0){o.men.ppc[idx]=ppc;o.men.ader[idx]=ader;}
     else{o.men.lbl.push(periodo);o.men.ppc.push(ppc);o.men.ader.push(ader);o.men.idp.push(o.kpi.idp);}
     o.kpi.ppc=ppc;o.kpi.ader=ader;
   }
-
-  try{
-    await addDoc(col,{obra:obraAtual,tipo,periodo,ppc,ader,ts:Date.now(),
-      data:new Date().toLocaleDateString('pt-BR')});
-  }catch(e){console.log('Firebase:',e.message);}
-
-  render(obraAtual);
+  try{await addDoc(col,{obra:obraAtual,tipo,periodo,ppc,ader,ts:Date.now(),data:new Date().toLocaleDateString('pt-BR')});}
+  catch(e){console.log('FB:',e.message);}
+  renderIndicadores(obraAtual);
   limparForm();
   const ok=document.getElementById('savedOk');
-  ok.style.display='inline';
-  setTimeout(()=>ok.style.display='none',3000);
+  ok.style.display='inline';setTimeout(()=>ok.style.display='none',3000);
 }
 window.salvar=salvar;
 
+async function atualizarPrevision(){
+  const btn=document.getElementById('btnPrev');
+  btn.disabled=true;btn.textContent='⏳ Buscando...';
+  setStatus('dot-load','Buscando dados do Prevision...');
+  try{
+    const r=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'prevision_all'})});
+    const data=await r.json();
+    if(data.erros?.length){console.warn('Erros Prevision:',data.erros);}
+    prevData=data.resultado||{};
+
+    // Atualiza dados das obras com dados do Prevision
+    const ts=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('atTs').textContent=`Atualizado às ${ts}`;
+
+    Object.entries(prevData).forEach(([nomeObra,d])=>{
+      const key=Object.keys(obraNomes).find(k=>obraNomes[k]===nomeObra);
+      if(!key||!obras[key])return;
+      if(d.avanco){
+        obras[key].av={base:d.avanco.base,prev:d.avanco.previsto,real:d.avanco.realizado};
+        document.getElementById('avSrc').textContent='● Prevision';
+      }
+      if(d.idp>0){
+        obras[key].kpi.idp=d.idp;
+        // Adiciona ao histórico mensal se não existir
+        const mes=obras[key].mes;
+        const idx=obras[key].men.lbl.indexOf(mes);
+        if(idx>=0)obras[key].men.idp[idx]=d.idp;
+      }
+    });
+
+    const qtdObras=Object.keys(prevData).length;
+    const qtdAt=Object.values(prevData).reduce((s,d)=>s+(d.atrasadas?.length||0),0);
+    setStatus('dot-on',`Prevision atualizado às ${ts} · ${qtdObras} obra(s) · ${qtdAt} atividade(s) atrasada(s)`);
+
+    renderIndicadores(obraAtual);
+    renderAtividades(obraAtual);
+    renderCurva(obraAtual);
+    renderCronograma(obraAtual);
+
+    if(data.erros?.length){
+      setStatus('dot-load',`Prevision atualizado com avisos: ${data.erros.join(' · ')}`);
+    }
+  }catch(e){
+    setStatus('dot-err','Erro ao conectar ao Prevision: '+e.message);
+  }
+  btn.disabled=false;btn.textContent='🔄 Atualizar Prevision';
+}
+window.atualizarPrevision=atualizarPrevision;
+
+// Firebase listener
 try{
   onSnapshot(col,snap=>{
-    document.getElementById('statusDot').className='dot dot-on';
-    document.getElementById('statusTxt').textContent=`Conectado ao Firebase · ${snap.size} lançamento(s) registrado(s) · atualização em tempo real`;
+    setStatus('dot-on',`Firebase conectado · ${snap.size} lançamento(s)`);
     snap.forEach(d=>{
       const r=d.data();
       if(!r.obra||!obras[r.obra])return;
@@ -434,23 +602,19 @@ try{
       if(r.tipo==='sem'){
         const idx=o.sem.lbl.findIndex(l=>l.trim()===r.periodo?.trim());
         if(idx>=0){o.sem.ppc[idx]=r.ppc;o.sem.ader[idx]=r.ader;}
-      } else {
+      }else{
         const idx=o.men.lbl.indexOf(r.periodo);
         if(idx>=0){o.men.ppc[idx]=r.ppc;o.men.ader[idx]=r.ader;}
-        o.kpi.ppc=r.ppc;o.kpi.ader=r.ader;
+        if(r.obra===obraAtual){o.kpi.ppc=r.ppc;o.kpi.ader=r.ader;}
       }
     });
-    render(obraAtual);
-  },err=>{
-    document.getElementById('statusTxt').textContent='Dados locais carregados · Firebase offline';
-  });
-}catch(e){
-  document.getElementById('statusTxt').textContent='Dados carregados localmente';
-}
+    renderIndicadores(obraAtual);
+  },()=>setStatus('dot-on','Dados locais · Firebase offline'));
+}catch(e){setStatus('dot-on','Dados carregados localmente');}
 
 document.getElementById('dt').textContent=new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
 populatePeriodo();
-render('almada');
+renderIndicadores('almada');
 </script>
 </body>
 </html>

@@ -23,12 +23,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .obra-btn{padding:10px 16px;color:#a8d5a2;background:transparent;border:none;cursor:pointer;font-size:12px;white-space:nowrap;border-bottom:2px solid transparent;transition:.15s;font-family:inherit}
 .obra-btn:hover{color:#fff;background:rgba(255,255,255,.05)}
 .obra-btn.on{color:#fff;border-bottom-color:var(--yl);background:rgba(255,255,255,.07);font-weight:500}
-.page-tabs{background:#fff;border-bottom:1px solid var(--bd);display:flex;padding:0 20px;gap:0}
-.ptab{padding:12px 20px;font-size:13px;color:var(--muted);background:transparent;border:none;cursor:pointer;border-bottom:2px solid transparent;font-family:inherit;transition:.15s}
-.ptab:hover{color:var(--dk)}
-.ptab.on{color:var(--g);border-bottom-color:var(--g);font-weight:500}
 .main{max-width:1280px;margin:0 auto;padding:16px}
-.page{display:none}.page.on{display:block}
 .status-bar{background:#f0f4f0;border:1px solid #d0e0d0;border-radius:8px;padding:8px 14px;font-size:12px;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:#ccc}
 .dot-on{background:var(--gm)}.dot-err{background:#E24B4A}.dot-load{background:var(--yl)}
@@ -126,7 +121,6 @@ tr:hover td{background:#f8faf8}
   <div class="hdr-right">
     <span class="hdr-date" id="dt"></span>
     <button class="btn-wh" onclick="toggleForm()" id="btnLancar">+ Lançar</button>
-    <button class="btn-yl" onclick="atualizarPrevision()" id="btnPrev">🔄 Atualizar Prevision</button>
     <button class="btn-wh" onclick="debugPrevision()" id="btnDebug">🔍 Diagnóstico</button>
   </div>
 </div>
@@ -138,13 +132,6 @@ tr:hover td{background:#f8faf8}
   <button class="obra-btn" onclick="selObra('tulipas',this)">Res. Tulipas</button>
   <button class="obra-btn" onclick="selObra('porto',this)">Res. do Porto</button>
   <button class="obra-btn" onclick="selObra('miraggio',this)">Miraggio</button>
-</div>
-
-<div class="page-tabs">
-  <button class="ptab on" onclick="selTab('indicadores',this)">📊 Indicadores</button>
-  <button class="ptab" onclick="selTab('atividades',this)">⚠️ Atividades Atrasadas</button>
-  <button class="ptab" onclick="selTab('curva',this)">📈 Curva S</button>
-  <button class="ptab" onclick="selTab('cronograma',this)">📅 Cronograma Mensal</button>
 </div>
 
 <div class="main">
@@ -170,7 +157,7 @@ tr:hover td{background:#f8faf8}
       <div class="field"><label>PPC (%)</label><input type="number" id="fPPC" min="0" max="200" step="0.1" placeholder="ex: 69.7"></div>
       <div class="field"><label>Aderência (%)</label><input type="number" id="fAder" min="0" max="300" step="0.1" placeholder="ex: 98.8"></div>
       <div class="field">
-        <label>IDP (%) <span style="font-size:10px;color:#854F0B;font-weight:400;text-transform:none">só gráficos</span></label>
+        <label>IDP (%)</label>
         <input type="number" id="fIDP" min="0" max="200" step="0.1" placeholder="ex: 97.0">
       </div>
     </div>
@@ -179,97 +166,48 @@ tr:hover td{background:#f8faf8}
       <button class="btn-n" onclick="limparForm()">Limpar</button>
       <span class="saved-ok" id="savedOk">✓ Salvo!</span>
     </div>
-    <p style="font-size:11px;color:var(--muted)">IDP da rosca = Prevision automático · IDP aqui atualiza apenas os gráficos semanal e mensal · PPC e Aderência sempre manuais</p>
+    <p style="font-size:11px;color:var(--muted)">Lançamento mensal atualiza a rosca de IDP, PPC e Aderência · Lançamento semanal atualiza apenas os gráficos</p>
   </div>
 
-  <!-- PAGE: INDICADORES -->
-  <div class="page on" id="page-indicadores">
-    <div class="top-row">
-      <div class="card">
-        <div class="lbl">Avanço Físico <span style="color:#0A6821;font-weight:400;text-transform:none;font-size:10px" id="avSrc">● local</span></div>
-        <div id="avBlock"></div>
-      </div>
-      <div>
-        <div class="lbl" style="padding-left:2px">Indicadores — <span id="mesLbl"></span></div>
-        <div class="kpi-row" id="kpiGrid"></div>
-      </div>
-    </div>
-    <div class="charts-row">
-      <div class="chart-card">
-        <div class="chart-title">Evolução semanal</div>
-        <div class="leg">
-          <span class="leg-item"><span class="leg-dot" style="background:#378ADD"></span>IDP</span>
-          <span class="leg-item"><span class="leg-dot" style="background:#1D9E75"></span>PPC</span>
-          <span class="leg-item"><span class="leg-dot" style="background:#7F77DD"></span>Aderência</span>
-          <span class="leg-item"><span class="leg-dash"></span>Metas</span>
-        </div>
-        <div style="position:relative;width:100%;height:220px">
-          <canvas id="cSem" role="img" aria-label="Evolução semanal">Gráfico semanal.</canvas>
-        </div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Evolução mensal</div>
-        <div class="leg">
-          <span class="leg-item"><span class="leg-dot" style="background:#378ADD"></span>IDP</span>
-          <span class="leg-item"><span class="leg-dot" style="background:#1D9E75"></span>PPC</span>
-          <span class="leg-item"><span class="leg-dot" style="background:#7F77DD"></span>Aderência</span>
-          <span class="leg-item"><span class="leg-dash"></span>Metas</span>
-        </div>
-        <div style="position:relative;width:100%;height:220px">
-          <canvas id="cMen" role="img" aria-label="Evolução mensal">Gráfico mensal.</canvas>
-        </div>
-      </div>
-    </div>
-    <div class="diag">
-      <div class="diag-hdr"><span class="diag-title">Diagnóstico</span><span class="badge" id="diagBadge"></span></div>
-      <div class="dg" id="diagGrid"></div>
-    </div>
-  </div>
-
-  <!-- PAGE: ATIVIDADES ATRASADAS -->
-  <div class="page" id="page-atividades">
+  <div class="top-row">
     <div class="card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-        <div>
-          <div class="chart-title">Atividades Atrasadas — <span id="atObraNome">Almada</span></div>
-          <div class="chart-sub">Atividades onde realizado &lt; previsto · Fonte: Prevision API</div>
-        </div>
-        <span class="update-ts" id="atTs"></span>
-      </div>
-      <div id="atBlock"><div class="empty">Clique em "🔄 Atualizar Prevision" para carregar as atividades atrasadas.</div></div>
+      <div class="lbl">Avanço Físico <span style="color:#0A6821;font-weight:400;text-transform:none;font-size:10px" id="avSrc">● local</span></div>
+      <div id="avBlock"></div>
+    </div>
+    <div>
+      <div class="lbl" style="padding-left:2px">Indicadores — <span id="mesLbl"></span></div>
+      <div class="kpi-row" id="kpiGrid"></div>
     </div>
   </div>
-
-  <!-- PAGE: CURVA S -->
-  <div class="page" id="page-curva">
-    <div class="grid2" style="margin-bottom:14px">
-      <div class="chart-card">
-        <div class="chart-title">Curva S — Avanço Físico</div>
-        <div class="chart-sub">Previsto vs Realizado · Fonte: Prevision API</div>
-        <div style="position:relative;width:100%;height:250px">
-          <canvas id="cCurvaFisico" role="img" aria-label="Curva S física">Curva S física.</canvas>
-        </div>
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">Evolução semanal</div>
+      <div class="leg">
+        <span class="leg-item"><span class="leg-dot" style="background:#378ADD"></span>IDP</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#1D9E75"></span>PPC</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#7F77DD"></span>Aderência</span>
+        <span class="leg-item"><span class="leg-dash"></span>Metas</span>
       </div>
-      <div class="chart-card">
-        <div class="chart-title">Curva S — Financeiro</div>
-        <div class="chart-sub">Previsto vs Realizado · Fonte: Prevision API</div>
-        <div style="position:relative;width:100%;height:250px">
-          <canvas id="cCurvaFin" role="img" aria-label="Curva S financeira">Curva S financeira.</canvas>
-        </div>
+      <div style="position:relative;width:100%;height:220px">
+        <canvas id="cSem" role="img" aria-label="Evolução semanal">Gráfico semanal.</canvas>
       </div>
     </div>
-    <div id="curvaBlock"><div class="empty">Clique em "🔄 Atualizar Prevision" para carregar a Curva S.</div></div>
+    <div class="chart-card">
+      <div class="chart-title">Evolução mensal</div>
+      <div class="leg">
+        <span class="leg-item"><span class="leg-dot" style="background:#378ADD"></span>IDP</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#1D9E75"></span>PPC</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#7F77DD"></span>Aderência</span>
+        <span class="leg-item"><span class="leg-dash"></span>Metas</span>
+      </div>
+      <div style="position:relative;width:100%;height:220px">
+        <canvas id="cMen" role="img" aria-label="Evolução mensal">Gráfico mensal.</canvas>
+      </div>
+    </div>
   </div>
-
-  <!-- PAGE: CRONOGRAMA MENSAL -->
-  <div class="page" id="page-cronograma">
-    <div class="card">
-      <div style="margin-bottom:14px">
-        <div class="chart-title">Cronograma Físico Mensal — <span id="cronObraNome">Almada</span></div>
-        <div class="chart-sub">Progressão por serviço · Fonte: Prevision API</div>
-      </div>
-      <div id="cronBlock"><div class="empty">Clique em "🔄 Atualizar Prevision" para carregar o cronograma mensal.</div></div>
-    </div>
+  <div class="diag">
+    <div class="diag-hdr"><span class="diag-title">Diagnóstico</span><span class="badge" id="diagBadge"></span></div>
+    <div class="dg" id="diagGrid"></div>
   </div>
 
 </div>
@@ -298,7 +236,7 @@ const col=collection(db,'indicadores');
 
 const WORKER='https://patient-heart-15b6.jean-barp10.workers.dev';
 const C=2*Math.PI*30, M_PPC=85, M_ADER=95, M_IDP=95;
-let obraAtual='almada', tabAtual='indicadores', cS=null, cM=null, cCF=null, cCFin=null;
+let obraAtual='almada', cS=null, cM=null;
 let prevData={};
 
 const obras={
@@ -369,8 +307,6 @@ function renderIndicadores(key){
   const o=obras[key];
   document.getElementById('mesLbl').textContent=o.mes;
   document.getElementById('fpObra').textContent=obraNomes[key];
-  document.getElementById('atObraNome').textContent=obraNomes[key];
-  document.getElementById('cronObraNome').textContent=obraNomes[key];
 
   const av=o.av,mx=Math.max(av.base,av.prev,av.real);
   document.getElementById('avBlock').innerHTML=[
@@ -379,7 +315,7 @@ function renderIndicadores(key){
 
   const k=o.kpi;
   document.getElementById('kpiGrid').innerHTML=[
-    {n:'IDP',v:k.idp,m:M_IDP,src:'auto',srcTxt:'Prevision'},
+    {n:'IDP',v:k.idp,m:M_IDP,src:'man',srcTxt:'manual'},
     {n:'PPC',v:k.ppc,m:M_PPC,src:'man',srcTxt:'manual'},
     {n:'Aderência',v:k.ader,m:M_ADER,src:'man',srcTxt:'manual'}
   ].map(({n,v,m,src,srcTxt})=>`<div class="kpi"><div class="kpi-name">${n}</div>${donut(v,m)}<div class="kpi-meta">meta ${m}%</div><div class="kpi-src src-${src}">● ${srcTxt}</div></div>`).join('');
@@ -415,166 +351,13 @@ function renderIndicadores(key){
   }).join('');
 }
 
-function renderAtividades(key){
-  const nomeObra=obraNomes[key];
-  const d=prevData[key];
-  const el=document.getElementById('atBlock');
-  if(!d){el.innerHTML='<div class="empty">Clique em "🔄 Atualizar Prevision" para carregar as atividades atrasadas.</div>';return;}
-  if(!d.atrasadas?.length){el.innerHTML='<div class="empty">✓ Nenhuma atividade atrasada encontrada para '+nomeObra+'.</div>';return;}
-  el.innerHTML=`<div style="margin-bottom:10px;font-size:12px;color:var(--muted)">${d.atrasadas.length} atividade(s) com atraso detectado · ordenado por severidade</div>
-  <div class="table-wrap"><table>
-    <thead><tr><th>Serviço</th><th>Pavimento</th><th>Realizado</th><th>Previsto</th><th>Atraso Relativo</th></tr></thead>
-    <tbody>${d.atrasadas.slice(0,50).map(a=>{
-      const tag=a.desvioRelPct>30?'tag-danger':a.desvioRelPct>15?'tag-warn':'tag-ok';
-      const unid=a.isQuantidade?'':' %';
-      return `<tr><td>${a.servico}</td><td>${a.pavimento}</td><td>${a.realizado}${unid}</td><td>${a.previsto}${unid}</td><td><span class="${tag}">-${a.desvioRelPct}%</span></td></tr>`;
-    }).join('')}</tbody>
-  </table></div>`;
-}
-
-function buildCurvaChart(canvasId, curvaData, old, unit='%'){
-  if(old) old.destroy();
-  if(!curvaData) return null;
-  return new Chart(document.getElementById(canvasId),{
-    type:'line',
-    data:{labels:curvaData.lbl,datasets:[
-      {label:'Previsto',data:curvaData.prev,borderColor:'#185FA5',backgroundColor:'transparent',
-       borderWidth:2,pointRadius:1.5,tension:.4,borderDash:[5,3]},
-      {label:'Realizado',data:curvaData.real,borderColor:'#0A6821',
-       backgroundColor:'rgba(10,104,33,.08)',borderWidth:2,pointRadius:1.5,tension:.4,fill:true}
-    ]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:true,labels:{font:{size:11},boxWidth:16}}},
-      scales:{
-        y:{min:0,ticks:{callback:v=>v.toFixed(1)+unit,font:{size:9}},grid:{color:'rgba(0,0,0,0.05)'}},
-        x:{ticks:{font:{size:9},maxRotation:45,autoSkip:true,maxTicksLimit:14},grid:{display:false}}
-      }}
-  });
-}
-
-function renderCurva(key){
-  const d=prevData[key];
-
-  // Curva S física
-  const curvaFis = d?.curva ? parseCurva(d.curva) : null;
-  if(cCF){cCF.destroy();cCF=null;}
-  if(curvaFis){
-    cCF=buildCurvaChart('cCurvaFisico', curvaFis, null, '%');
-    document.getElementById('curvaBlock').innerHTML='';
-  } else {
-    document.getElementById('curvaBlock').innerHTML='';
-    document.getElementById('cCurvaFisico').parentElement.innerHTML=
-      '<div class="empty">Curva S física: clique em "🔄 Atualizar Prevision"</div>';
-  }
-
-  // Curva S financeira
-  const curvaFin = d?.curvaFin ? parseCurva(d.curvaFin) : null;
-  if(cCFin){cCFin.destroy();cCFin=null;}
-  if(curvaFin){
-    // Financeiro: valores em R$ — converte de decimal para % relativo
-    cCFin=buildCurvaChart('cCurvaFin', curvaFin, null, '%');
-  } else {
-    const el=document.getElementById('cCurvaFin');
-    if(el) el.parentElement.innerHTML='<div class="empty">Curva S financeira: clique em "🔄 Atualizar Prevision"</div>';
-  }
-}
-
-function parseCurva(raw){
-  if(!raw) return null;
-  try{
-    // Formato confirmado do Prevision:
-    // { base: [...], dates: [...], expected: [...], measured: [...], period_end_dates: [...], realized: [...] }
-    // Valores em decimal (0 a 1), datas como strings
-
-    const base     = raw.base     || [];
-    const expected = raw.expected || [];
-    const realized = raw.realized || [];
-    const dates    = raw.period_end_dates || raw.dates || [];
-
-    const maxLen = Math.max(base.length, expected.length, realized.length);
-    if(!maxLen) return null;
-
-    // Labels: usa datas se disponíveis, senão semanas
-    const lbl = dates.length
-      ? dates.map(d => {
-          // Converte "2024-01-07" → "jan/24" ou similar
-          try {
-            const dt = new Date(d);
-            const meses = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-            return `${meses[dt.getMonth()]}/${String(dt.getFullYear()).slice(2)}`;
-          } catch(e) { return String(d).substring(0,7); }
-        })
-      : Array.from({length:maxLen},(_,i)=>`S${i+1}`);
-
-    // Remove duplicatas de label (meses que aparecem várias vezes por semana)
-    // Reduz para granularidade mensal agrupando por mês
-    const mensal = {};
-    lbl.forEach((l,i)=>{
-      if(!mensal[l]) mensal[l]={base:0,exp:0,real:0,n:0};
-      const m=mensal[l];
-      m.base = Math.max(m.base, (base[i]||0)*100);
-      m.exp  = Math.max(m.exp,  (expected[i]||0)*100);
-      m.real = Math.max(m.real, (realized[i]||0)*100);
-    });
-
-    const lblFinal  = Object.keys(mensal);
-    const prevFinal = Object.values(mensal).map(m=>+m.exp.toFixed(1));
-    const realFinal = Object.values(mensal).map(m=>+m.real.toFixed(1));
-
-    return {
-      lbl: lblFinal,
-      prev: prevFinal,
-      real: realFinal
-    };
-  }catch(e){
-    console.warn('parseCurva error:',e);
-    return null;
-  }
-}
-
-function renderCronograma(key){
-  const nomeObra=obraNomes[key];
-  const d=prevData[nomeObra];
-  const el=document.getElementById('cronBlock');
-  if(!d||!d.cronograma){el.innerHTML='<div class="empty">Clique em "🔄 Atualizar Prevision" para carregar o cronograma.</div>';return;}
-  try {
-    const cron=d.cronograma;
-    // Tenta exibir como tabela
-    if(Array.isArray(cron)&&cron.length){
-      const headers=Object.keys(cron[0]);
-      el.innerHTML=`<div class="table-wrap"><table>
-        <thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
-        <tbody>${cron.slice(0,30).map(row=>`<tr>${headers.map(h=>`<td>${row[h]??'—'}</td>`).join('')}</tr>`).join('')}</tbody>
-      </table></div>`;
-    } else {
-      el.innerHTML=`<pre style="font-size:11px;overflow:auto;padding:10px;background:#f8f8f8;border-radius:8px">${JSON.stringify(cron,null,2).substring(0,2000)}</pre>`;
-    }
-  } catch(e){
-    el.innerHTML=`<div class="empty">Erro ao processar cronograma: ${e.message}</div>`;
-  }
-}
-
 function selObra(key,btn){
   document.querySelectorAll('.obra-btn').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
   obraAtual=key;
   renderIndicadores(key);
-  renderAtividades(key);
-  renderCurva(key);
-  renderCronograma(key);
-  document.getElementById('atObraNome').textContent=obraNomes[key];
-  document.getElementById('cronObraNome').textContent=obraNomes[key];
 }
 window.selObra=selObra;
-
-function selTab(id,btn){
-  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('on'));
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
-  btn.classList.add('on');
-  document.getElementById('page-'+id).classList.add('on');
-  tabAtual=id;
-}
-window.selTab=selTab;
 
 function toggleForm(){
   const p=document.getElementById('formPanel');
@@ -646,6 +429,7 @@ async function salvar(){
     }
     o.kpi.ppc=ppc;
     o.kpi.ader=ader;
+    if(!isNaN(idpGraf)) o.kpi.idp=idpGraf;
   }
 
   // Salva no Firebase (inclui IDP se foi digitado)
@@ -665,105 +449,6 @@ async function salvar(){
   setTimeout(()=>ok.style.display='none',3000);
 }
 window.salvar=salvar;
-
-async function atualizarPrevision(){
-  const btn=document.getElementById('btnPrev');
-  btn.disabled=true; btn.textContent='⏳ Buscando...';
-  setStatus('dot-load','Conectando ao Prevision...');
-
-  try{
-    const r=await fetch(WORKER,{method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'prevision_avanco'})});
-    const data=await r.json();
-    prevData=data.resultado||{};
-    const erros=data.erros||[];
-
-    const ts=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-    document.getElementById('atTs').textContent=`Atualizado às ${ts}`;
-
-    let obrasAtualizadas=0, totalAtrasadas=0;
-
-    Object.entries(prevData).forEach(([key,d])=>{
-      if(!obras[key])return;
-      const o=obras[key];
-
-      // Atualiza Avanço Físico (só atualiza se valores > 0)
-      if(d.avanco && (d.avanco.base>0 || d.avanco.realizado>0)){
-        o.av={base:d.avanco.base, prev:d.avanco.previsto, real:d.avanco.realizado};
-        // IDP = realizado / base (conforme definição da Blendi)
-        o.kpi.idp = d.avanco.idp;
-        // Atualiza histórico mensal com IDP atual
-        const mes=o.mes;
-        const idx=o.men.lbl.indexOf(mes);
-        if(idx>=0) o.men.idp[idx]=d.avanco.idp;
-        obrasAtualizadas++;
-        console.log(`[Prevision] ${d.nome} (${d.projectName}): Base=${d.avanco.base}% Prev=${d.avanco.previsto}% Real=${d.avanco.realizado}% IDP=${d.avanco.idp}% | fonte=${d.avanco.fonte} | atraso=${d.avanco.atraso_dias}d`);
-      } else {
-        // Mantém dados locais se Prevision retornou 0
-        console.warn(`[Prevision] ${d.nome}: avanco zerado ou ausente`, d.avanco, 'debug:', d.debug);
-        if(d.avanco) obrasAtualizadas++; // conta mesmo se zerado para o status
-      }
-
-      // Curva S — atualiza gráfico mensal de avanço
-      if(d.curva){
-        try{
-          const curva=Array.isArray(d.curva)?d.curva:(typeof d.curva==='object'?Object.values(d.curva):[]);
-          if(curva.length){
-            // Tenta extrair labels e valores da curva S
-            const lbls=curva.map(p=>p.date||p.month||p.periodo||p.label||'');
-            const prevArr=curva.map(p=>+((p.expected??p.previsto??p.planned??0)*100).toFixed(1));
-            const realArr=curva.map(p=>+((p.actual??p.realizado??p.completed??0)*100).toFixed(1));
-            if(lbls.length&&realArr.some(v=>v>0)){
-              o._curvaS={lbl:lbls, prev:prevArr, real:realArr};
-            }
-          }
-        }catch(e){}
-      }
-
-      // Atividades atrasadas
-      if(d.atrasadas) totalAtrasadas+=d.atrasadas.length;
-    });
-
-    // Status final
-    const src=document.getElementById('avSrc');
-    if(obrasAtualizadas>0 && src) src.textContent='● Prevision';
-
-    // Verifica se alguma obra teve avanço físico real (> 0)
-    const comDados=Object.values(prevData).filter(d=>d.avanco&&(d.avanco.base>0||d.avanco.realizado>0)).length;
-    if(comDados>0){
-      const atrasoDias=Object.values(prevData).filter(d=>d.avanco?.atraso_dias).map(d=>`${d.nome.split(' ')[0]}: ${d.avanco.atraso_dias}d`).join(' · ');
-      setStatus('dot-on',`Prevision: ${comDados} obra(s) atualizadas · ${ts}${atrasoDias?' | atraso: '+atrasoDias:''}`);
-    } else if(obrasAtualizadas>0){
-      setStatus('dot-load',`Prevision conectado mas sem dados de medição · Verifique o console (F12) para diagnóstico · ${ts}`);
-    } else {
-      const msg=erros.length?erros[0]:'Nenhum dado retornado.';
-      setStatus('dot-err',`Prevision: ${msg}`);
-    }
-
-    if(erros.length) console.warn('Erros Prevision:',erros);
-
-    // Salva no sessionStorage para persistir após reload
-    try {
-      sessionStorage.setItem('blendi_prevData', JSON.stringify(prevData));
-      sessionStorage.setItem('blendi_prevTs', ts);
-    } catch(e) {}
-
-    // Re-renderiza tudo com dados novos
-    renderIndicadores(obraAtual);
-    renderAtividades(obraAtual);
-    renderCurva(obraAtual);
-    renderCronograma(obraAtual);
-
-  }catch(e){
-    setStatus('dot-err','Erro ao conectar ao Prevision: '+e.message);
-    console.error(e);
-  }
-
-  btn.disabled=false; btn.textContent='🔄 Atualizar Prevision';
-}
-window.atualizarPrevision=atualizarPrevision;
-
 
 async function debugPrevision(){
   document.getElementById('debugModal').classList.add('open');
@@ -818,7 +503,11 @@ try{
           o.men.ader[idx]=r.ader;
           if(r.idp!==undefined) o.men.idp[idx]=r.idp;
         }
-        if(r.obra===obraAtual){o.kpi.ppc=r.ppc;o.kpi.ader=r.ader;}
+        if(r.obra===obraAtual){
+          o.kpi.ppc=r.ppc;
+          o.kpi.ader=r.ader;
+          if(r.idp!==undefined) o.kpi.idp=r.idp;
+        }
       }
     });
     renderIndicadores(obraAtual);
@@ -827,32 +516,6 @@ try{
 
 document.getElementById('dt').textContent=new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
 populatePeriodo();
-
-// Restaura dados do Prevision do sessionStorage (persiste entre reloads)
-try {
-  const cached = sessionStorage.getItem('blendi_prevData');
-  if(cached) {
-    prevData = JSON.parse(cached);
-    const ts = sessionStorage.getItem('blendi_prevTs') || '';
-    // Aplica dados cached nas obras
-    Object.entries(prevData).forEach(([key,d])=>{
-      if(!obras[key]) return;
-      const o=obras[key];
-      if(d.avanco && (d.avanco.base>0 || d.avanco.realizado>0)){
-        o.av={base:d.avanco.base, prev:d.avanco.previsto, real:d.avanco.realizado};
-        o.kpi.idp=d.avanco.idp;
-        const mesIdx=o.men.lbl.indexOf(o.mes);
-        if(mesIdx>=0) o.men.idp[mesIdx]=d.avanco.idp;
-        const src=document.getElementById('avSrc');
-        if(src) src.textContent='● Prevision';
-      }
-    });
-    if(Object.keys(prevData).length > 0) {
-      setStatus('dot-on', `Dados do Prevision restaurados${ts?' ('+ts+')':''} · Clique em 🔄 para atualizar`);
-    }
-  }
-} catch(e) { console.log('sessionStorage:', e.message); }
-
 renderIndicadores('almada');
 </script>
 </body>
